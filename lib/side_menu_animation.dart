@@ -9,28 +9,37 @@ const _sideMenuDuration = const Duration(milliseconds: 800);
 class SideMenuAnimation extends StatefulWidget {
   const SideMenuAnimation.builder({
     Key key,
-    this.builder,
-    this.items,
-    this.onItemSelected,
+    @required this.builder,
+    @required this.items,
+    @required this.onItemSelected,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
     this.duration = _sideMenuDuration,
+    this.tapOutsideToDismiss = false,
+    this.scrimColor = Colors.transparent,
   })  : this.views = null,
         this.appBarBuilder = null,
+        this.indexSelected = null,
+        assert(items != null, "items can't be null"),
         super(key: key);
 
   const SideMenuAnimation({
     Key key,
-    this.views,
-    this.items,
-    this.onItemSelected,
+    @required this.views,
+    @required this.items,
+    @required this.onItemSelected,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
     this.duration = _sideMenuDuration,
     this.appBarBuilder,
+    this.indexSelected = 0,
+    this.tapOutsideToDismiss = false,
+    this.scrimColor = Colors.transparent,
   })  : this.builder = null,
+        assert(items != null, "items can't be null"),
+        assert(views != null, "views can't be null"),
         super(key: key);
 
   final SideMenuAnimationBuilder builder;
@@ -42,6 +51,9 @@ class SideMenuAnimation extends StatefulWidget {
   final double menuWidth;
   final Duration duration;
   final List<Widget> views;
+  final int indexSelected;
+  final bool tapOutsideToDismiss;
+  final Color scrimColor;
 
   @override
   _SideMenuAnimationState createState() => _SideMenuAnimationState();
@@ -51,12 +63,16 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
   AnimationController _animationController;
   List<Animation<double>> _animations;
 
-  int _selectedIndex = 1;
-  int _oldSelectedIndex = 1;
+  int _selectedIndex;
+  int _selectedColor = 1;
+  int _oldSelectedIndex;
   bool wasZeroIndexPressed = false;
+  ColorTween _scrimColorTween;
 
   @override
   void initState() {
+    _selectedIndex = widget.indexSelected;
+    _oldSelectedIndex = _selectedIndex;
     _animationController = AnimationController(
       vsync: this,
       duration: widget.duration,
@@ -72,6 +88,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
                     index * _intervalGap + _intervalGap,
                   )),
             )).toList();
+    _scrimColorTween = ColorTween(end: Colors.transparent, begin: widget.scrimColor);
     _animationController.forward(from: 1.0);
     super.initState();
   }
@@ -107,18 +124,31 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
                       ),
                       body: Stack(
                         children: [
-                          widget.views[_oldSelectedIndex],
-                          ClipPath(
-                            clipper: _MainSideMenuClipper(
-                              _animationController.status == AnimationStatus.forward &&
-                                      _selectedIndex != _oldSelectedIndex &&
-                                      !wasZeroIndexPressed
-                                  ? Tween(begin: 0.0, end: 3.0).animate(_animationController).value
-                                  : 3.0,
-                            ),
-                            child: widget.views[_selectedIndex],
-                          ),
+                          if (widget.views.length > 0) ...[
+                            widget.views[_oldSelectedIndex],
+                            ClipPath(
+                              clipper: _MainSideMenuClipper(
+                                percent: _animationController.status == AnimationStatus.forward &&
+                                        _selectedIndex != _oldSelectedIndex &&
+                                        !wasZeroIndexPressed
+                                    ? Tween(begin: 0.0, end: 3.0).animate(_animationController).value
+                                    : 3.0,
+                                dy: itemSize * _selectedIndex,
+                              ),
+                              child: widget.views[_selectedIndex],
+                            )
+                          ],
                         ],
+                      ),
+                    ),
+                  if (widget.tapOutsideToDismiss && _animationController.value < 1)
+                    Align(
+                      child: GestureDetector(
+                        onTap: () => _animationController.forward(from: 0.0),
+                        child: AnimatedContainer(
+                          duration: widget.duration,
+                          color: _scrimColorTween.evaluate(Tween(begin: 0.0, end: 1.0).animate(_animationController)),
+                        ),
                       ),
                     ),
                   for (int i = 0; i < widget.items.length; i++)
@@ -135,14 +165,15 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
                               : -_animations[i].value),
                         alignment: Alignment.topLeft,
                         child: Material(
-                          color: i == _selectedIndex ? widget.selectedColor : widget.unselectedColor,
+                          color: (i == _selectedColor) ? widget.selectedColor : widget.unselectedColor,
                           child: InkWell(
                             onTap: () {
                               _animationController.forward(from: 0.0);
                               if (i != 0) {
                                 setState(() {
                                   _oldSelectedIndex = _selectedIndex;
-                                  _selectedIndex = i;
+                                  _selectedIndex = i - 1;
+                                  _selectedColor = i;
                                 });
                                 wasZeroIndexPressed = false;
                               } else {
@@ -165,15 +196,15 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
 
 class _MainSideMenuClipper extends CustomClipper<Path> {
   final double percent;
-
-  _MainSideMenuClipper(this.percent);
+  final double dy;
+  _MainSideMenuClipper({this.percent, this.dy});
 
   @override
   Path getClip(Size size) {
     final path = Path();
     path.addOval(
       Rect.fromCenter(
-        center: Offset.zero,
+        center: Offset(0.0, dy),
         width: size.width * percent,
         height: size.height * percent,
       ),
