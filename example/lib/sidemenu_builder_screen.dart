@@ -13,14 +13,17 @@ class SideMenuBuilderScreen extends StatelessWidget {
         builder: (showMenu) {
           return Scaffold(
             appBar: AppBar(
-              leading: IconButton(icon: Icon(Icons.menu, color: Colors.black), onPressed: showMenu),
+              leading: IconButton(
+                  icon: Icon(Icons.menu, color: Colors.black),
+                  onPressed: showMenu),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 0,
               brightness: Brightness.light,
               centerTitle: true,
               title: ValueListenableBuilder<int>(
                 valueListenable: _index,
-                builder: (_, value, __) => Text(myMenuValue[value].title, style: TextStyle(color: Colors.black)),
+                builder: (_, value, __) => Text(myMenuValue[value].title,
+                    style: TextStyle(color: Colors.black)),
               ),
             ),
             body: ValueListenableBuilder<int>(
@@ -35,7 +38,9 @@ class SideMenuBuilderScreen extends StatelessWidget {
             ),
           );
         },
-        items: myMenuValue.map((value) => Icon(value.icon, color: Colors.white, size: 50)).toList(),
+        items: myMenuValue
+            .map((value) => Icon(value.icon, color: Colors.white, size: 50))
+            .toList(),
         selectedColor: Color(0xFFFF595E),
         unselectedColor: Color(0xFF1F2041),
         onItemSelected: (value) {

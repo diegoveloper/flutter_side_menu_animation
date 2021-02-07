@@ -23,7 +23,10 @@ class Screen extends StatelessWidget {
                 Text(
                   itemsScreen[index].title,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700),
                 ),
               ],
             ),

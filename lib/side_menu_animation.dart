@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
+/// Signature for a function that creates a widget with a `showMenu` callback which allow us to invoke and open the Side Menu.
+/// Used by [SideMenuAnimation.builder].
 typedef SideMenuAnimationBuilder = Widget Function(VoidCallback showMenu);
+
+/// Signature for a function that creates an [AppBar] widget with a `showMenu` callback which allow us to invoke and open the Side Menu.
+/// Used by [SideMenuAnimation].
 typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 
 const _sideMenuWidth = 100.0;
 const _sideMenuDuration = const Duration(milliseconds: 800);
 
+/// This is the main widget which controls the items from the lateral menu and also can control the pages with a circular reveal animation.
 class SideMenuAnimation extends StatefulWidget {
+  /// Constructor to allow us to create a [SideMenuAnimation] without Circular Reveal animation.
+  /// We are responsible for updating/changing the page based on the index we receive.
   const SideMenuAnimation.builder({
     Key key,
     @required this.builder,
@@ -24,6 +32,8 @@ class SideMenuAnimation extends StatefulWidget {
         assert(items != null, "items can't be null"),
         super(key: key);
 
+  /// Constructor to allow us to create a [SideMenuAnimation] with Circular Reveal animation.
+  /// We are responsible for updating/changing the [AppBar] based on the index we receive.
   const SideMenuAnimation({
     Key key,
     @required this.views,
@@ -42,31 +52,55 @@ class SideMenuAnimation extends StatefulWidget {
         assert(views != null, "views can't be null"),
         super(key: key);
 
+  /// Builder where we have to return our view/page based on the index we have, it also comes with the `showMenu` callback where we can use to open the Side Menu.
   final SideMenuAnimationBuilder builder;
+
+  /// Builder where we have to return our [AppBar] based on the index we have, it also comes with the `showMenu` callback where we can use to open the Side Menu.
   final SideMenuAnimationAppBarBuilder appBarBuilder;
+
+  /// List of items that we want to display on the Side Menu.
   final List<Widget> items;
+
+  /// Function where we receive the current index selected.
   final ValueChanged<int> onItemSelected;
+
+  /// [Color] used for the background of the selected item.
   final Color selectedColor;
+
+  /// [Color] used for the background of the unselected item.
   final Color unselectedColor;
+
+  /// Menu width for the Side Menu.
   final double menuWidth;
+
+  /// Duration for the animation when the menu appears, this is the total duration, each item has total_duration/items.lenght
   final Duration duration;
+
+  /// Pages/Views we pass to the widge to display with a circular reveal animation
   final List<Widget> views;
+
+  /// Initial index selected
   final int indexSelected;
+
+  /// If we want to tap outside the menu to dismiss the Side Menu, set this to `true`. It's `false` by default.
   final bool tapOutsideToDismiss;
+
+  /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`, this is the panel where we tap to dismiss the Side Menu.
   final Color scrimColor;
 
   @override
   _SideMenuAnimationState createState() => _SideMenuAnimationState();
 }
 
-class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTickerProviderStateMixin {
+class _SideMenuAnimationState extends State<SideMenuAnimation>
+    with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   List<Animation<double>> _animations;
 
   int _selectedIndex;
   int _selectedColor = 1;
   int _oldSelectedIndex;
-  bool wasZeroIndexPressed = false;
+  bool _wasZeroIndexPressed = false;
   ColorTween _scrimColorTween;
 
   @override
@@ -88,7 +122,8 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
                     index * _intervalGap + _intervalGap,
                   )),
             )).toList();
-    _scrimColorTween = ColorTween(end: Colors.transparent, begin: widget.scrimColor);
+    _scrimColorTween =
+        ColorTween(end: Colors.transparent, begin: widget.scrimColor);
     _animationController.forward(from: 1.0);
     super.initState();
   }
@@ -128,10 +163,13 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
                             widget.views[_oldSelectedIndex],
                             ClipPath(
                               clipper: _MainSideMenuClipper(
-                                percent: _animationController.status == AnimationStatus.forward &&
+                                percent: _animationController.status ==
+                                            AnimationStatus.forward &&
                                         _selectedIndex != _oldSelectedIndex &&
-                                        !wasZeroIndexPressed
-                                    ? Tween(begin: 0.0, end: 3.0).animate(_animationController).value
+                                        !_wasZeroIndexPressed
+                                    ? Tween(begin: 0.0, end: 3.0)
+                                        .animate(_animationController)
+                                        .value
                                     : 3.0,
                                 dy: itemSize * _selectedIndex,
                               ),
@@ -141,13 +179,16 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
                         ],
                       ),
                     ),
-                  if (widget.tapOutsideToDismiss && _animationController.value < 1)
+                  if (widget.tapOutsideToDismiss &&
+                      _animationController.value < 1)
                     Align(
                       child: GestureDetector(
                         onTap: () => _animationController.forward(from: 0.0),
                         child: AnimatedContainer(
                           duration: widget.duration,
-                          color: _scrimColorTween.evaluate(Tween(begin: 0.0, end: 1.0).animate(_animationController)),
+                          color: _scrimColorTween.evaluate(
+                              Tween(begin: 0.0, end: 1.0)
+                                  .animate(_animationController)),
                         ),
                       ),
                     ),
@@ -160,12 +201,15 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
                       child: Transform(
                         transform: Matrix4.identity()
                           ..setEntry(3, 2, 0.001)
-                          ..rotateY(_animationController.status == AnimationStatus.reverse
+                          ..rotateY(_animationController.status ==
+                                  AnimationStatus.reverse
                               ? -_animations[widget.items.length - 1 - i].value
                               : -_animations[i].value),
                         alignment: Alignment.topLeft,
                         child: Material(
-                          color: (i == _selectedColor) ? widget.selectedColor : widget.unselectedColor,
+                          color: (i == _selectedColor)
+                              ? widget.selectedColor
+                              : widget.unselectedColor,
                           child: InkWell(
                             onTap: () {
                               _animationController.forward(from: 0.0);
@@ -175,9 +219,9 @@ class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTicker
                                   _selectedIndex = i - 1;
                                   _selectedColor = i;
                                 });
-                                wasZeroIndexPressed = false;
+                                _wasZeroIndexPressed = false;
                               } else {
-                                wasZeroIndexPressed = true;
+                                _wasZeroIndexPressed = true;
                               }
                               widget.onItemSelected(i);
                             },
@@ -213,5 +257,6 @@ class _MainSideMenuClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(covariant _MainSideMenuClipper oldClipper) => oldClipper.percent != percent;
+  bool shouldReclip(covariant _MainSideMenuClipper oldClipper) =>
+      oldClipper.percent != percent;
 }
