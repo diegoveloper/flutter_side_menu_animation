@@ -1,8 +1,13 @@
---- 
+name: Package Publish
+
+on:
+  push:
+    branches: [ release ]
+    
 jobs: 
   check_version: 
     name: "Check Version Tag"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps: 
       - 
         uses: actions/checkout@v1
@@ -44,7 +49,7 @@ jobs:
   publish: 
     needs: 
       - check_version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps: 
       - 
         name: Checkout
@@ -61,7 +66,7 @@ jobs:
     name: "Tag Version"
     needs: 
       - publish
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps: 
       - 
         name: "Download New Version"
