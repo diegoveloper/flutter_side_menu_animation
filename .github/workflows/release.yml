@@ -40,20 +40,20 @@ jobs:
         with:
           name: home
           path: version.txt 
-          
-  publish:
-    needs: [check_version]
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: 'Publish Package'
-        uses: ilteoood/actions-flutter-pub-publisher@master
-        with:
-          credential: ${{secrets.CREDENTIAL_JSON}}
-          flutter_package: true
-          skip_test: true
-          dry_run: false         
+
+    publish:
+      needs: [check_version]
+      runs-on: ubuntu-20.04
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v1
+        - name: 'Publish Package'
+          uses: ilteoood/actions-flutter-pub-publisher@master
+          with:
+            credential: ${{secrets.CREDENTIAL_JSON}}
+            flutter_package: true
+            skip_test: true
+            dry_run: false         
 
    tag:
     needs: [publish]
