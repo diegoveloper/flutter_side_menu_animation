@@ -7,7 +7,7 @@ on:
 jobs:
 
    check_version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     name: 'Check Version Tag'
     steps:
       - uses: actions/checkout@v1
@@ -21,7 +21,7 @@ jobs:
         run: echo ${{ steps.previoustag.outputs.tag }}
       - name: 'Get New Version'
         id: config
-        uses: CumulusDS/get-yaml-paths-action@v0.0.3
+        uses: CumulusDS/get-yaml-paths-action@v0.1.0
         with:
           file: pubspec.yaml
           version_name: version
@@ -41,12 +41,10 @@ jobs:
           name: home
           path: version.txt   
 
-
-
    tag:
     needs: [check_version]
     name: 'Tag Version'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: 'Download New Version'
       uses: actions/download-artifact@v1
@@ -56,4 +54,4 @@ jobs:
       uses: tvdias/github-tagger@v0.0.2
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        tag: $(cat home/version.txt)
+        tag: echo ${{ cat home/version.txt }}

@@ -11,8 +11,8 @@ Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
         <TH style="text-align:center">SIDE MENU BUILDER</TH>
     </TR>
 	<TR>
-		<TD><img src="./art/side-menu.gif" alt="Side-Menu" width="200"/></TD> 
-		<TD><img src="./art/side-menu-builder.gif" alt="Side-Menu-builder" width="200"/></TD> 
+		<TD><img src="https://github.com/diegoveloper/flutter_side_menu_animation/blob/main/art/side-menu.gif" alt="Side-Menu" width="200"/></TD> 
+		<TD><img src="https://github.com/diegoveloper/flutter_side_menu_animation/blob/main/art/side-menu-builder.gif" alt="Side-Menu-builder" width="200"/></TD> 
 	</TR>
 </TABLE>
 
