@@ -3,18 +3,11 @@
 Animated Side Menu with customizable UI. Inspired in Yalantis library (Android/iOS).
 Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
 
-### SideMenuAnimation and SideMenuAnimationBuilder
+### Sample
 
-<TABLE BORDER>
-    <TR>
-        <TH style="text-align:center">SIDE MENU</TH>
-        <TH style="text-align:center">SIDE MENU BUILDER</TH>
-    </TR>
-	<TR>
-		<TD><img src="https://github.com/diegoveloper/flutter_side_menu_animation/blob/main/art/side-menu.gif" alt="Side-Menu" width="200"/></TD> 
-		<TD><img src="https://github.com/diegoveloper/flutter_side_menu_animation/blob/main/art/side-menu-builder.gif" alt="Side-Menu-builder" width="200"/></TD> 
-	</TR>
-</TABLE>
+<p align="center">
+  <img width="300" height="600" src="https://media.giphy.com/media/UScpVNqe11bqSfpQ6G/giphy.gif">
+</p>
 
 ## Features
 - Optional parameter to tap outside to dismiss
