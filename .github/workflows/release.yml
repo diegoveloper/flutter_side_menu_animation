@@ -9,7 +9,6 @@ jobs:
 
 
    tag:
-    needs: [publish]
     name: 'Tag Version'
     runs-on: ubuntu-latest
     steps:
