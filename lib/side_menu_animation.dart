@@ -48,8 +48,8 @@ class SideMenuAnimation extends StatefulWidget {
     this.tapOutsideToDismiss = false,
     this.scrimColor = Colors.transparent,
   })  : this.builder = null,
-        assert(items != null, "items can't be null"),
-        assert(views != null, "views can't be null"),
+        assert(items != null, "Items can't be null"),
+        assert(views != null, "Views can't be null"),
         super(key: key);
 
   /// Builder where we have to return our view/page based on the index we have, it also comes with the `showMenu` callback where we can use to open the Side Menu.
@@ -100,7 +100,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
   int _selectedIndex;
   int _selectedColor = 1;
   int _oldSelectedIndex;
-  bool _wasZeroIndexPressed = false;
+  bool _dontAnimate = false;
   ColorTween _scrimColorTween;
 
   @override
@@ -166,7 +166,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                                 percent: _animationController.status ==
                                             AnimationStatus.forward &&
                                         _selectedIndex != _oldSelectedIndex &&
-                                        !_wasZeroIndexPressed
+                                        !_dontAnimate
                                     ? Tween(begin: 0.0, end: 3.0)
                                         .animate(_animationController)
                                         .value
@@ -183,7 +183,10 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                       _animationController.value < 1)
                     Align(
                       child: GestureDetector(
-                        onTap: () => _animationController.forward(from: 0.0),
+                        onTap: () {
+                          _dontAnimate = true;
+                          _animationController.forward(from: 0.0);
+                        },
                         child: AnimatedContainer(
                           duration: widget.duration,
                           color: _scrimColorTween.evaluate(
@@ -219,9 +222,9 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                                   _selectedIndex = i - 1;
                                   _selectedColor = i;
                                 });
-                                _wasZeroIndexPressed = false;
+                                _dontAnimate = false;
                               } else {
-                                _wasZeroIndexPressed = true;
+                                _dontAnimate = true;
                               }
                               widget.onItemSelected(i);
                             },

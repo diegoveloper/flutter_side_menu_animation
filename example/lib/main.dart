@@ -31,7 +31,7 @@ class SampleScreen extends StatelessWidget {
         title: Text('SideMenuAnimation-Example'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(15),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
