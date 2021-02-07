@@ -44,7 +44,7 @@ jobs:
 
 
    tag:
-    needs: [publish]
+    needs: [check_version]
     name: 'Tag Version'
     runs-on: ubuntu-latest
     steps:
