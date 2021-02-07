@@ -2,7 +2,7 @@
 jobs: 
   check_version: 
     name: "Check Version Tag"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps: 
       - 
         uses: actions/checkout@v1
@@ -44,7 +44,7 @@ jobs:
   publish: 
     needs: 
       - check_version
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps: 
       - 
         name: Checkout
@@ -61,7 +61,7 @@ jobs:
     name: "Tag Version"
     needs: 
       - publish
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps: 
       - 
         name: "Download New Version"
