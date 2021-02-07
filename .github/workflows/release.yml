@@ -39,10 +39,24 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: home
-          path: version.txt   
+          path: version.txt 
+          
+  publish:
+    needs: [check_version]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: 'Publish Package'
+        uses: ilteoood/actions-flutter-pub-publisher@master
+        with:
+          credential: ${{secrets.CREDENTIAL_JSON}}
+          flutter_package: true
+          skip_test: true
+          dry_run: false         
 
    tag:
-    needs: [check_version]
+    needs: [publish]
     name: 'Tag Version'
     runs-on: ubuntu-20.04
     steps:
