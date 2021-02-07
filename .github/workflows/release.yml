@@ -3,7 +3,7 @@ name: Package Publish
 on:
   push:
     branches: [ release ]
-    
+
 jobs: 
   check_version: 
     name: "Check Version Tag"
@@ -84,8 +84,3 @@ jobs:
         with: 
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           tag: "${{env.RELEASE_VERSION}}"
-name: "Package Publish"
-true: 
-  push: 
-    branches: 
-      - release
