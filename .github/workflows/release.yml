@@ -18,7 +18,7 @@ jobs:
       with:
         name: home
     - name: Set and Tag the new version
-    - uses: tvdias/github-tagger@v0.0.2
+      uses: tvdias/github-tagger@v0.0.2
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         tag: $(cat home/version.txt)
