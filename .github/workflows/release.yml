@@ -51,7 +51,11 @@ jobs:
       with:
         name: home
     - name: Set and Tag the new version
-      uses: tvdias/github-tagger@v0.0.2
+      shell: bash
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+      run: echo "::set-env name=RELEASE_VERSION::$(cat home/version.txt)"
+    - uses: tvdias/github-tagger@v0.0.2
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        tag: echo ${{ cat home/version.txt }}
+        tag: ${{env.RELEASE_VERSION}}
