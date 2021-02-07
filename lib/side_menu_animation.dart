@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-typedef SideMenuBuilder = Widget Function(VoidCallback showMenu);
-typedef SideMenuAppBarBuilder = AppBar Function(VoidCallback showMenu);
+typedef SideMenuAnimationBuilder = Widget Function(VoidCallback showMenu);
+typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 
 const _sideMenuWidth = 100.0;
 const _sideMenuDuration = const Duration(milliseconds: 800);
 
-class SideMenu extends StatefulWidget {
-  const SideMenu.builder({
+class SideMenuAnimation extends StatefulWidget {
+  const SideMenuAnimation.builder({
     Key key,
     this.builder,
     this.items,
@@ -20,7 +20,7 @@ class SideMenu extends StatefulWidget {
         this.appBarBuilder = null,
         super(key: key);
 
-  const SideMenu({
+  const SideMenuAnimation({
     Key key,
     this.views,
     this.items,
@@ -33,8 +33,8 @@ class SideMenu extends StatefulWidget {
   })  : this.builder = null,
         super(key: key);
 
-  final SideMenuBuilder builder;
-  final SideMenuAppBarBuilder appBarBuilder;
+  final SideMenuAnimationBuilder builder;
+  final SideMenuAnimationAppBarBuilder appBarBuilder;
   final List<Widget> items;
   final ValueChanged<int> onItemSelected;
   final Color selectedColor;
@@ -44,10 +44,10 @@ class SideMenu extends StatefulWidget {
   final List<Widget> views;
 
   @override
-  _SideMenuState createState() => _SideMenuState();
+  _SideMenuAnimationState createState() => _SideMenuAnimationState();
 }
 
-class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin {
+class _SideMenuAnimationState extends State<SideMenuAnimation> with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   List<Animation<double>> _animations;
 
