@@ -1,5 +1,7 @@
 # Side Menu Animation
 
+[![pub package](https://img.shields.io/pub/v/side_menu_animation.svg)](https://pub.dartlang.org/packages/side_menu_animation)
+
 Animated Side Menu with customizable UI. Inspired in Yalantis library (Android/iOS).
 Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
 
