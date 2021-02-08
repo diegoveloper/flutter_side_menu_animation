@@ -9,6 +9,13 @@ Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
   <img width="300" height="600" src="https://media.giphy.com/media/UScpVNqe11bqSfpQ6G/giphy.gif">
 </p>
 
+# Learn how to build this package
+
+- Video 1: https://www.youtube.com/watch?v=vcdETKdI15E
+- Video 2: https://www.youtube.com/watch?v=W7mxTcwX5Wg
+
+(Don't forget to subscribe and like)
+
 ## Features
 - Optional parameter to tap outside to dismiss
 - Optional parameter to change the scrimColor
