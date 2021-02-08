@@ -131,7 +131,18 @@ class SideMenuBuilderScreen extends StatelessWidget {
 
 For more info about the ussage, check the `example` project.
 
+## Contact
 
 You can follow me on twitter [@diegoveloper](https://www.twitter.com/diegoveloper) , [Youtube channel](https://www.youtube.com/diegoveloper)
 
 If you want to contribute with the project, just open a Pull request :), all contributions are welcome.
+
+
+## Contribution
+
+If you want to contribute with this package, follow this steps:
+
+- Fork this repository.
+- Do your changes! You can add your name with link into the `CONTRIBUTORS.md` file.
+- Before push your changes run `dartfmt . -w`.
+- Create a Pull request on Github from your fork/branch to my repo(main branch).
