@@ -3,13 +3,13 @@
 Animated Side Menu with customizable UI. Inspired in Yalantis library (Android/iOS).
 Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
 
-### Sample
+## Sample
 
 <p align="center">
   <img width="300" height="600" src="https://media.giphy.com/media/UScpVNqe11bqSfpQ6G/giphy.gif">
 </p>
 
-# Learn how to build this package
+## Learn how to build this package
 
 - Video 1: https://www.youtube.com/watch?v=vcdETKdI15E
 - Video 2: https://www.youtube.com/watch?v=W7mxTcwX5Wg
