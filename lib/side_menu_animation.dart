@@ -11,6 +11,8 @@ typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 const _sideMenuWidth = 100.0;
 const _sideMenuDuration = const Duration(milliseconds: 800);
 
+enum Position { rigth, left }
+
 /// This is the main widget which controls the items from the lateral menu and also can control the pages with a circular reveal animation.
 class SideMenuAnimation extends StatefulWidget {
   /// Constructor to allow us to create a [SideMenuAnimation] without Circular Reveal animation.
@@ -20,6 +22,7 @@ class SideMenuAnimation extends StatefulWidget {
     @required this.builder,
     @required this.items,
     @required this.onItemSelected,
+    this.position = Position.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
@@ -39,6 +42,7 @@ class SideMenuAnimation extends StatefulWidget {
     @required this.views,
     @required this.items,
     @required this.onItemSelected,
+    this.position =Position.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
@@ -84,6 +88,8 @@ class SideMenuAnimation extends StatefulWidget {
 
   /// If we want to tap outside the menu to dismiss the Side Menu, set this to `true`. It's `false` by default.
   final bool tapOutsideToDismiss;
+
+  final Position position;
 
   /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`, this is the panel where we tap to dismiss the Side Menu.
   final Color scrimColor;
@@ -172,6 +178,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                                         .value
                                     : 3.0,
                                 dy: itemSize * _selectedIndex,
+                                dx: (widget.position == Position.left)?0.0:500.0
                               ),
                               child: widget.views[_selectedIndex],
                             )
@@ -196,43 +203,85 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                       ),
                     ),
                   for (int i = 0; i < widget.items.length; i++)
-                    Positioned(
-                      left: 0,
-                      top: itemSize * i,
-                      width: widget.menuWidth,
-                      height: itemSize,
-                      child: Transform(
-                        transform: Matrix4.identity()
-                          ..setEntry(3, 2, 0.001)
-                          ..rotateY(_animationController.status ==
-                                  AnimationStatus.reverse
-                              ? -_animations[widget.items.length - 1 - i].value
-                              : -_animations[i].value),
-                        alignment: Alignment.topLeft,
-                        child: Material(
-                          color: (i == _selectedColor)
-                              ? widget.selectedColor
-                              : widget.unselectedColor,
-                          child: InkWell(
-                            onTap: () {
-                              _animationController.forward(from: 0.0);
-                              if (i != 0) {
-                                setState(() {
-                                  _oldSelectedIndex = _selectedIndex;
-                                  _selectedIndex = i - 1;
-                                  _selectedColor = i;
-                                });
-                                _dontAnimate = false;
-                              } else {
-                                _dontAnimate = true;
-                              }
-                              widget.onItemSelected(i);
-                            },
-                            child: widget.items[i],
-                          ),
-                        ),
-                      ),
-                    ),
+                    // ignore: unrelated_type_equality_checks
+                    
+                    (widget.position != Position.left)
+                        ? Positioned(
+                            right: 0,
+                            top: itemSize * i,
+                            width: widget.menuWidth,
+                            height: itemSize,
+                            child: Transform(
+                              transform: Matrix4.identity()
+                                ..setEntry(3, 2, 0.001)
+                                ..rotateY(_animationController.status ==
+                                        AnimationStatus.reverse
+                                    ? -_animations[widget.items.length - 1 - i]
+                                        .value
+                                    : -_animations[i].value),
+                              alignment: Alignment.topRight,
+                              child: Material(
+                                color: (i == _selectedColor)
+                                    ? widget.selectedColor
+                                    : widget.unselectedColor,
+                                child: InkWell(
+                                  onTap: () {
+                                    _animationController.forward(from: 0.0);
+                                    if (i != 0) {
+                                      setState(() {
+                                        _oldSelectedIndex = _selectedIndex;
+                                        _selectedIndex = i - 1;
+                                        _selectedColor = i;
+                                      });
+                                      _dontAnimate = false;
+                                    } else {
+                                      _dontAnimate = true;
+                                    }
+                                    widget.onItemSelected(i);
+                                  },
+                                  child: widget.items[i],
+                                ),
+                              ),
+                            ),
+                          )
+                        : Positioned(
+                            left: 0,
+                            top: itemSize * i,
+                            width: widget.menuWidth,
+                            height: itemSize,
+                            child: Transform(
+                              transform: Matrix4.identity()
+                                ..setEntry(3, 2, 0.001)
+                                ..rotateY(_animationController.status ==
+                                        AnimationStatus.reverse
+                                    ? -_animations[widget.items.length - 1 - i]
+                                        .value
+                                    : -_animations[i].value),
+                              alignment: Alignment.topLeft,
+                              child: Material(
+                                color: (i == _selectedColor)
+                                    ? widget.selectedColor
+                                    : widget.unselectedColor,
+                                child: InkWell(
+                                  onTap: () {
+                                    _animationController.forward(from: 0.0);
+                                    if (i != 0) {
+                                      setState(() {
+                                        _oldSelectedIndex = _selectedIndex;
+                                        _selectedIndex = i - 1;
+                                        _selectedColor = i;
+                                      });
+                                      _dontAnimate = false;
+                                    } else {
+                                      _dontAnimate = true;
+                                    }
+                                    widget.onItemSelected(i);
+                                  },
+                                  child: widget.items[i],
+                                ),
+                              ),
+                            ),
+                          )
                 ],
               );
             });
@@ -243,15 +292,16 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
 
 class _MainSideMenuClipper extends CustomClipper<Path> {
   final double percent;
-  final double dy;
-  _MainSideMenuClipper({this.percent, this.dy});
+  final double dy, dx;
+
+  _MainSideMenuClipper( {this.percent, this.dy, this.dx});
 
   @override
   Path getClip(Size size) {
     final path = Path();
     path.addOval(
       Rect.fromCenter(
-        center: Offset(0.0, dy),
+        center: Offset(dx, dy),
         width: size.width * percent,
         height: size.height * percent,
       ),
