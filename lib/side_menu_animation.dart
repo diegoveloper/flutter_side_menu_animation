@@ -10,6 +10,7 @@ typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 
 const _sideMenuWidth = 100.0;
 const _sideMenuDuration = const Duration(milliseconds: 800);
+const _kEdgeDragWidth = 20.0;
 
 /// This is the main widget which controls the items from the lateral menu and also can control the pages with a circular reveal animation.
 class SideMenuAnimation extends StatefulWidget {
@@ -26,6 +27,8 @@ class SideMenuAnimation extends StatefulWidget {
     this.duration = _sideMenuDuration,
     this.tapOutsideToDismiss = false,
     this.scrimColor = Colors.transparent,
+    this.edgeDragWidth = _kEdgeDragWidth,
+    this.enableEdgeDragGesture = false,
   })  : this.views = null,
         this.appBarBuilder = null,
         this.indexSelected = null,
@@ -47,6 +50,8 @@ class SideMenuAnimation extends StatefulWidget {
     this.indexSelected = 0,
     this.tapOutsideToDismiss = false,
     this.scrimColor = Colors.transparent,
+    this.edgeDragWidth = _kEdgeDragWidth,
+    this.enableEdgeDragGesture = false,
   })  : this.builder = null,
         assert(items != null, "Items can't be null"),
         assert(views != null, "Views can't be null"),
@@ -88,6 +93,12 @@ class SideMenuAnimation extends StatefulWidget {
   /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`, this is the panel where we tap to dismiss the Side Menu.
   final Color scrimColor;
 
+  /// Enable swipe from left to right to display the menu, it's `false` by default. `enableEdgeDragGesture`
+  final bool enableEdgeDragGesture;
+
+  /// If `enableEdgeDragGesture` is true, then we can change the `edgeDragWidth`, this is the width of the area where we do swipe.
+  final double edgeDragWidth;
+
   @override
   _SideMenuAnimationState createState() => _SideMenuAnimationState();
 }
@@ -107,10 +118,15 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
   void initState() {
     _selectedIndex = widget.indexSelected;
     _oldSelectedIndex = _selectedIndex;
-    _animationController = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    _animationController =
+        AnimationController(vsync: this, duration: widget.duration);
+    _createAnimations();
+    _animationController.forward(from: 1.0);
+    _createColorTween();
+    super.initState();
+  }
+
+  void _createAnimations() {
     final _intervalGap = 1 / widget.items.length;
     _animations = List.generate(
         widget.items.length,
@@ -122,41 +138,51 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                     index * _intervalGap + _intervalGap,
                   )),
             )).toList();
+  }
+
+  void _createColorTween() {
     _scrimColorTween =
         ColorTween(end: Colors.transparent, begin: widget.scrimColor);
-    _animationController.forward(from: 1.0);
-    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(SideMenuAnimation oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.scrimColor != widget.scrimColor) _createColorTween();
+    if (oldWidget.items.length != widget.items.length) _createAnimations();
+    if (oldWidget.duration != widget.duration) {
+      _animationController.duration = widget.duration;
+    }
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationController?.dispose();
     super.dispose();
+  }
+
+  void _displayMenuLeftToRight(DragEndDetails endDetails) {
+    double velocity = endDetails.primaryVelocity;
+    if (velocity > 0) _animationController.reverse();
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: LayoutBuilder(builder: (context, constraints) {
-        final itemSize = constraints.maxHeight / widget.items.length;
-        return AnimatedBuilder(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final itemSize = constraints.maxHeight / widget.items.length;
+          return AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
               return Stack(
                 children: [
                   if (widget.builder != null)
-                    widget.builder(
-                      () {
-                        _animationController.reverse();
-                      },
-                    ),
+                    widget.builder(() => _animationController.reverse()),
                   if (widget.appBarBuilder != null)
                     Scaffold(
-                      appBar: widget.appBarBuilder(
-                        () {
-                          _animationController.reverse();
-                        },
-                      ),
+                      appBar: widget
+                          .appBarBuilder(() => _animationController.reverse()),
                       body: Stack(
                         children: [
                           if (widget.views.length > 0) ...[
@@ -171,7 +197,8 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                                         .animate(_animationController)
                                         .value
                                     : 3.0,
-                                dy: itemSize * _selectedIndex,
+                                dy: (itemSize * _selectedIndex) +
+                                    (itemSize / 2),
                               ),
                               child: widget.views[_selectedIndex],
                             )
@@ -193,6 +220,17 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                               Tween(begin: 0.0, end: 1.0)
                                   .animate(_animationController)),
                         ),
+                      ),
+                    ),
+                  if (widget.enableEdgeDragGesture &&
+                      _animationController.isCompleted)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onHorizontalDragEnd: _displayMenuLeftToRight,
+                        behavior: HitTestBehavior.translucent,
+                        excludeFromSemantics: true,
+                        child: Container(width: widget.edgeDragWidth),
                       ),
                     ),
                   for (int i = 0; i < widget.items.length; i++)
@@ -235,8 +273,10 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                     ),
                 ],
               );
-            });
-      }),
+            },
+          );
+        },
+      ),
     );
   }
 }
