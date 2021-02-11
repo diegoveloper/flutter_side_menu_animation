@@ -10,7 +10,6 @@ class SideMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SideMenuAnimation(
-        position: SideMenuPosition.rigth,
         appBarBuilder: (showMenu) => AppBar(
           leading: IconButton(
               icon: Icon(Icons.menu, color: Colors.black), onPressed: showMenu),
@@ -28,6 +27,7 @@ class SideMenuScreen extends StatelessWidget {
           myMenuValue.length - 1,
           (index) => Screen(itemsScreen: myMenuValue[index + 1].items),
         ),
+        position: SideMenuPosition.right,
         items: myMenuValue
             .map((value) => Icon(value.icon, color: Colors.white, size: 50))
             .toList(),

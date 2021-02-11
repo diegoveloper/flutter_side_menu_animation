@@ -7,9 +7,17 @@ Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
 
 ## Sample
 
-<p align="center">
-  <img width="300" height="600" src="https://media.giphy.com/media/UScpVNqe11bqSfpQ6G/giphy.gif">
-</p>
+<TABLE BORDER style="margin-left: auto;
+  margin-right: auto;">
+    <TR>
+        <TH style="text-align:center">SIDE MENU ANIMATION</TH>
+        <TH style="text-align:center">SIDE MENU ANIMATION - DRAG GESTURE</TH>
+    </TR>
+	<TR>
+		<TD><img width="300" height="600" src="https://media.giphy.com/media/UScpVNqe11bqSfpQ6G/giphy.gif"></TD> 
+        <TD><img width="300" height="600" src="https://media.giphy.com/media/YdiRzuOlK8bw7ckaRc/giphy-downsized-large.gif"></TD>
+	</TR>
+</TABLE>
 
 ## Learn how to build this package
 
