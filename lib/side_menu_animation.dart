@@ -11,6 +11,7 @@ typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 const _sideMenuWidth = 100.0;
 const _sideMenuDuration = const Duration(milliseconds: 800);
 
+/// this enum is the position selector of the menu.
 enum Position { rigth, left }
 
 /// This is the main widget which controls the items from the lateral menu and also can control the pages with a circular reveal animation.
