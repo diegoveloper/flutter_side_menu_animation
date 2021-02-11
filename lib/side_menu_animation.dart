@@ -143,6 +143,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size.width;
     return Material(
       child: LayoutBuilder(builder: (context, constraints) {
         final itemSize = constraints.maxHeight / widget.items.length;
@@ -181,7 +182,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                                   dy: itemSize * _selectedIndex,
                                   dx: (widget.position == SideMenuPosition.left)
                                       ? 0.0
-                                      : 500.0),
+                                      : size),
                               child: widget.views[_selectedIndex],
                             )
                           ],
@@ -205,85 +206,48 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                       ),
                     ),
                   for (int i = 0; i < widget.items.length; i++)
-                    // ignore: unrelated_type_equality_checks
-
-                    (widget.position != SideMenuPosition.left)
-                        ? Positioned(
-                            right: 0,
-                            top: itemSize * i,
-                            width: widget.menuWidth,
-                            height: itemSize,
-                            child: Transform(
-                              transform: Matrix4.identity()
-                                ..setEntry(3, 2, 0.001)
-                                ..rotateY(_animationController.status ==
-                                        AnimationStatus.reverse
-                                    ? -_animations[widget.items.length - 1 - i]
-                                        .value
-                                    : -_animations[i].value),
-                              alignment: Alignment.topRight,
-                              child: Material(
-                                color: (i == _selectedColor)
-                                    ? widget.selectedColor
-                                    : widget.unselectedColor,
-                                child: InkWell(
-                                  onTap: () {
-                                    _animationController.forward(from: 0.0);
-                                    if (i != 0) {
-                                      setState(() {
-                                        _oldSelectedIndex = _selectedIndex;
-                                        _selectedIndex = i - 1;
-                                        _selectedColor = i;
-                                      });
-                                      _dontAnimate = false;
-                                    } else {
-                                      _dontAnimate = true;
-                                    }
-                                    widget.onItemSelected(i);
-                                  },
-                                  child: widget.items[i],
-                                ),
-                              ),
-                            ),
-                          )
-                        : Positioned(
-                            left: 0,
-                            top: itemSize * i,
-                            width: widget.menuWidth,
-                            height: itemSize,
-                            child: Transform(
-                              transform: Matrix4.identity()
-                                ..setEntry(3, 2, 0.001)
-                                ..rotateY(_animationController.status ==
-                                        AnimationStatus.reverse
-                                    ? -_animations[widget.items.length - 1 - i]
-                                        .value
-                                    : -_animations[i].value),
-                              alignment: Alignment.topLeft,
-                              child: Material(
-                                color: (i == _selectedColor)
-                                    ? widget.selectedColor
-                                    : widget.unselectedColor,
-                                child: InkWell(
-                                  onTap: () {
-                                    _animationController.forward(from: 0.0);
-                                    if (i != 0) {
-                                      setState(() {
-                                        _oldSelectedIndex = _selectedIndex;
-                                        _selectedIndex = i - 1;
-                                        _selectedColor = i;
-                                      });
-                                      _dontAnimate = false;
-                                    } else {
-                                      _dontAnimate = true;
-                                    }
-                                    widget.onItemSelected(i);
-                                  },
-                                  child: widget.items[i],
-                                ),
-                              ),
-                            ),
-                          )
+                    Positioned(
+                      left:
+                          (widget.position != SideMenuPosition.left) ? null : 0,
+                      right:
+                          (widget.position != SideMenuPosition.left) ? 0 : null,
+                      top: itemSize * i,
+                      width: widget.menuWidth,
+                      height: itemSize,
+                      child: Transform(
+                        transform: Matrix4.identity()
+                          ..setEntry(3, 2, 0.001)
+                          ..rotateY(_animationController.status ==
+                                  AnimationStatus.reverse
+                              ? -_animations[widget.items.length - 1 - i].value
+                              : -_animations[i].value),
+                        alignment: (widget.position != SideMenuPosition.left)
+                            ? Alignment.topRight
+                            : Alignment.topLeft,
+                        child: Material(
+                          color: (i == _selectedColor)
+                              ? widget.selectedColor
+                              : widget.unselectedColor,
+                          child: InkWell(
+                            onTap: () {
+                              _animationController.forward(from: 0.0);
+                              if (i != 0) {
+                                setState(() {
+                                  _oldSelectedIndex = _selectedIndex;
+                                  _selectedIndex = i - 1;
+                                  _selectedColor = i;
+                                });
+                                _dontAnimate = false;
+                              } else {
+                                _dontAnimate = true;
+                              }
+                              widget.onItemSelected(i);
+                            },
+                            child: widget.items[i],
+                          ),
+                        ),
+                      ),
+                    )
                 ],
               );
             });
