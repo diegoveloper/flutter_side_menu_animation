@@ -10,7 +10,7 @@ class SideMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SideMenuAnimation(
-        position: Position.rigth,
+        position: SideMenuPosition.rigth,
         appBarBuilder: (showMenu) => AppBar(
           leading: IconButton(
               icon: Icon(Icons.menu, color: Colors.black), onPressed: showMenu),

@@ -12,7 +12,7 @@ const _sideMenuWidth = 100.0;
 const _sideMenuDuration = const Duration(milliseconds: 800);
 
 /// this enum is the position selector of the menu.
-enum Position { rigth, left }
+enum SideMenuPosition { rigth, left }
 
 /// This is the main widget which controls the items from the lateral menu and also can control the pages with a circular reveal animation.
 class SideMenuAnimation extends StatefulWidget {
@@ -23,7 +23,7 @@ class SideMenuAnimation extends StatefulWidget {
     @required this.builder,
     @required this.items,
     @required this.onItemSelected,
-    this.position = Position.left,
+    this.position = SideMenuPosition.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
@@ -43,7 +43,7 @@ class SideMenuAnimation extends StatefulWidget {
     @required this.views,
     @required this.items,
     @required this.onItemSelected,
-    this.position = Position.left,
+    this.position = SideMenuPosition.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
@@ -90,7 +90,7 @@ class SideMenuAnimation extends StatefulWidget {
   /// If we want to tap outside the menu to dismiss the Side Menu, set this to `true`. It's `false` by default.
   final bool tapOutsideToDismiss;
 
-  final Position position;
+  final SideMenuPosition position;
 
   /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`, this is the panel where we tap to dismiss the Side Menu.
   final Color scrimColor;
@@ -179,7 +179,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                                           .value
                                       : 3.0,
                                   dy: itemSize * _selectedIndex,
-                                  dx: (widget.position == Position.left)
+                                  dx: (widget.position == SideMenuPosition.left)
                                       ? 0.0
                                       : 500.0),
                               child: widget.views[_selectedIndex],
@@ -207,7 +207,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                   for (int i = 0; i < widget.items.length; i++)
                     // ignore: unrelated_type_equality_checks
 
-                    (widget.position != Position.left)
+                    (widget.position != SideMenuPosition.left)
                         ? Positioned(
                             right: 0,
                             top: itemSize * i,
