@@ -42,7 +42,7 @@ class SideMenuAnimation extends StatefulWidget {
     @required this.views,
     @required this.items,
     @required this.onItemSelected,
-    this.position =Position.left,
+    this.position = Position.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
@@ -169,17 +169,18 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                             widget.views[_oldSelectedIndex],
                             ClipPath(
                               clipper: _MainSideMenuClipper(
-                                percent: _animationController.status ==
-                                            AnimationStatus.forward &&
-                                        _selectedIndex != _oldSelectedIndex &&
-                                        !_dontAnimate
-                                    ? Tween(begin: 0.0, end: 3.0)
-                                        .animate(_animationController)
-                                        .value
-                                    : 3.0,
-                                dy: itemSize * _selectedIndex,
-                                dx: (widget.position == Position.left)?0.0:500.0
-                              ),
+                                  percent: _animationController.status ==
+                                              AnimationStatus.forward &&
+                                          _selectedIndex != _oldSelectedIndex &&
+                                          !_dontAnimate
+                                      ? Tween(begin: 0.0, end: 3.0)
+                                          .animate(_animationController)
+                                          .value
+                                      : 3.0,
+                                  dy: itemSize * _selectedIndex,
+                                  dx: (widget.position == Position.left)
+                                      ? 0.0
+                                      : 500.0),
                               child: widget.views[_selectedIndex],
                             )
                           ],
@@ -204,7 +205,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                     ),
                   for (int i = 0; i < widget.items.length; i++)
                     // ignore: unrelated_type_equality_checks
-                    
+
                     (widget.position != Position.left)
                         ? Positioned(
                             right: 0,
@@ -294,7 +295,7 @@ class _MainSideMenuClipper extends CustomClipper<Path> {
   final double percent;
   final double dy, dx;
 
-  _MainSideMenuClipper( {this.percent, this.dy, this.dx});
+  _MainSideMenuClipper({this.percent, this.dy, this.dx});
 
   @override
   Path getClip(Size size) {

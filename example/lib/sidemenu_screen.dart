@@ -9,7 +9,6 @@ class SideMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: SideMenuAnimation(
         // position: Position.rigth,
         appBarBuilder: (showMenu) => AppBar(
