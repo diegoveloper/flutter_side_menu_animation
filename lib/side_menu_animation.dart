@@ -11,6 +11,9 @@ typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 const _sideMenuWidth = 100.0;
 const _sideMenuDuration = const Duration(milliseconds: 800);
 
+/// this enum is the position selector of the menu.
+enum SideMenuPosition { rigth, left }
+
 /// This is the main widget which controls the items from the lateral menu and also can control the pages with a circular reveal animation.
 class SideMenuAnimation extends StatefulWidget {
   /// Constructor to allow us to create a [SideMenuAnimation] without Circular Reveal animation.
@@ -20,6 +23,7 @@ class SideMenuAnimation extends StatefulWidget {
     @required this.builder,
     @required this.items,
     @required this.onItemSelected,
+    this.position = SideMenuPosition.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
@@ -39,6 +43,7 @@ class SideMenuAnimation extends StatefulWidget {
     @required this.views,
     @required this.items,
     @required this.onItemSelected,
+    this.position = SideMenuPosition.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
     this.menuWidth = _sideMenuWidth,
@@ -84,6 +89,9 @@ class SideMenuAnimation extends StatefulWidget {
 
   /// If we want to tap outside the menu to dismiss the Side Menu, set this to `true`. It's `false` by default.
   final bool tapOutsideToDismiss;
+
+  /// if we want the menu to appear on the right or left side. by default it is on the left side.
+  final SideMenuPosition position;
 
   /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`, this is the panel where we tap to dismiss the Side Menu.
   final Color scrimColor;
@@ -163,16 +171,18 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                             widget.views[_oldSelectedIndex],
                             ClipPath(
                               clipper: _MainSideMenuClipper(
-                                percent: _animationController.status ==
-                                            AnimationStatus.forward &&
-                                        _selectedIndex != _oldSelectedIndex &&
-                                        !_dontAnimate
-                                    ? Tween(begin: 0.0, end: 3.0)
-                                        .animate(_animationController)
-                                        .value
-                                    : 3.0,
-                                dy: itemSize * _selectedIndex,
-                              ),
+                                  percent: _animationController.status ==
+                                              AnimationStatus.forward &&
+                                          _selectedIndex != _oldSelectedIndex &&
+                                          !_dontAnimate
+                                      ? Tween(begin: 0.0, end: 3.0)
+                                          .animate(_animationController)
+                                          .value
+                                      : 3.0,
+                                  dy: itemSize * _selectedIndex,
+                                  dx: (widget.position == SideMenuPosition.left)
+                                      ? 0.0
+                                      : constraints.maxWidth),
                               child: widget.views[_selectedIndex],
                             )
                           ],
@@ -197,7 +207,10 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                     ),
                   for (int i = 0; i < widget.items.length; i++)
                     Positioned(
-                      left: 0,
+                      left:
+                          (widget.position != SideMenuPosition.left) ? null : 0,
+                      right:
+                          (widget.position != SideMenuPosition.left) ? 0 : null,
                       top: itemSize * i,
                       width: widget.menuWidth,
                       height: itemSize,
@@ -208,7 +221,9 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                                   AnimationStatus.reverse
                               ? -_animations[widget.items.length - 1 - i].value
                               : -_animations[i].value),
-                        alignment: Alignment.topLeft,
+                        alignment: (widget.position != SideMenuPosition.left)
+                            ? Alignment.topRight
+                            : Alignment.topLeft,
                         child: Material(
                           color: (i == _selectedColor)
                               ? widget.selectedColor
@@ -232,7 +247,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                           ),
                         ),
                       ),
-                    ),
+                    )
                 ],
               );
             });
@@ -243,15 +258,16 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
 
 class _MainSideMenuClipper extends CustomClipper<Path> {
   final double percent;
-  final double dy;
-  _MainSideMenuClipper({this.percent, this.dy});
+  final double dy, dx;
+
+  _MainSideMenuClipper({this.percent, this.dy, this.dx});
 
   @override
   Path getClip(Size size) {
     final path = Path();
     path.addOval(
       Rect.fromCenter(
-        center: Offset(0.0, dy),
+        center: Offset(dx, dy),
         width: size.width * percent,
         height: size.height * percent,
       ),
