@@ -27,6 +27,7 @@ class SideMenuScreen extends StatelessWidget {
           myMenuValue.length - 1,
           (index) => Screen(itemsScreen: myMenuValue[index + 1].items),
         ),
+        position: SideMenuPosition.right,
         items: myMenuValue
             .map((value) => Icon(value.icon, color: Colors.white, size: 50))
             .toList(),

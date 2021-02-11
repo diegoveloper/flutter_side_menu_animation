@@ -38,6 +38,7 @@ class SideMenuBuilderScreen extends StatelessWidget {
             ),
           );
         },
+        enableEdgeDragGesture: true,
         items: myMenuValue
             .map((value) => Icon(value.icon, color: Colors.white, size: 50))
             .toList(),

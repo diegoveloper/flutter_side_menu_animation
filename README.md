@@ -1,13 +1,30 @@
 # Side Menu Animation
 
+[![pub package](https://img.shields.io/pub/v/side_menu_animation.svg)](https://pub.dartlang.org/packages/side_menu_animation)
+
 Animated Side Menu with customizable UI. Inspired in Yalantis library (Android/iOS).
 Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
 
-### Sample
+## Sample
 
-<p align="center">
-  <img width="300" height="600" src="https://media.giphy.com/media/UScpVNqe11bqSfpQ6G/giphy.gif">
-</p>
+<TABLE BORDER style="margin-left: auto;
+  margin-right: auto;">
+    <TR>
+        <TH style="text-align:center">SIDE MENU ANIMATION</TH>
+        <TH style="text-align:center">SIDE MENU ANIMATION - DRAG GESTURE</TH>
+    </TR>
+	<TR>
+		<TD><img width="300" height="600" src="https://media.giphy.com/media/UScpVNqe11bqSfpQ6G/giphy.gif"></TD> 
+        <TD><img width="300" height="600" src="https://media.giphy.com/media/YdiRzuOlK8bw7ckaRc/giphy-downsized-large.gif"></TD>
+	</TR>
+</TABLE>
+
+## Learn how to build this package
+
+- Video 1: https://www.youtube.com/watch?v=vcdETKdI15E
+- Video 2: https://www.youtube.com/watch?v=W7mxTcwX5Wg
+
+(Don't forget to subscribe and like)
 
 ## Features
 - Optional parameter to tap outside to dismiss
@@ -16,6 +33,7 @@ Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
 - Custom color item for the side menu unselected
 - Custom width for the side menu
 - Custom duration of the animation side menu
+- Display the menu from left or right
 
 ## Getting Started
 
@@ -122,7 +140,18 @@ class SideMenuBuilderScreen extends StatelessWidget {
 
 For more info about the ussage, check the `example` project.
 
+## Contact
 
 You can follow me on twitter [@diegoveloper](https://www.twitter.com/diegoveloper) , [Youtube channel](https://www.youtube.com/diegoveloper)
 
 If you want to contribute with the project, just open a Pull request :), all contributions are welcome.
+
+
+## Contribution
+
+If you want to contribute with this package, follow this steps:
+
+- Fork this repository.
+- Do your changes! You can add your name with link into the `CONTRIBUTORS.md` file.
+- Before push your changes run `dartfmt . -w`.
+- Create a Pull request on Github from your fork/branch to my repo(main branch).
