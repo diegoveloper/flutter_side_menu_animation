@@ -90,6 +90,7 @@ class SideMenuAnimation extends StatefulWidget {
   /// If we want to tap outside the menu to dismiss the Side Menu, set this to `true`. It's `false` by default.
   final bool tapOutsideToDismiss;
 
+  /// if we want the menu to appear on the right or left side. by default it is on the left side.
   final SideMenuPosition position;
 
   /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`, this is the panel where we tap to dismiss the Side Menu.
@@ -143,7 +144,6 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width;
     return Material(
       child: LayoutBuilder(builder: (context, constraints) {
         final itemSize = constraints.maxHeight / widget.items.length;
@@ -182,7 +182,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                                   dy: itemSize * _selectedIndex,
                                   dx: (widget.position == SideMenuPosition.left)
                                       ? 0.0
-                                      : size),
+                                      : constraints.maxWidth),
                               child: widget.views[_selectedIndex],
                             )
                           ],
