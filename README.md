@@ -33,6 +33,7 @@ Original Design: https://dribbble.com/shots/1689922-Side-Menu-Animation
 - Custom color item for the side menu unselected
 - Custom width for the side menu
 - Custom duration of the animation side menu
+- Display the menu from left or right
 
 ## Getting Started
 
