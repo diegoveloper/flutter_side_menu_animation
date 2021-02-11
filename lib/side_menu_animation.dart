@@ -13,7 +13,7 @@ const _sideMenuDuration = const Duration(milliseconds: 800);
 const _kEdgeDragWidth = 20.0;
 
 /// this enum is the position selector of the menu.
-enum SideMenuPosition { rigth, left }
+enum SideMenuPosition { right, left }
 
 /// This is the main widget which controls the items from the lateral menu and also can control the pages with a circular reveal animation.
 class SideMenuAnimation extends StatefulWidget {
