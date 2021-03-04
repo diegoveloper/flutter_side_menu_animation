@@ -3,7 +3,9 @@
 
 .packages
 .pub/
-
+.fvm/
+.vscode/
+.idea/
 build/
 ios/.generated/
 ios/Flutter/Generated.xcconfig
