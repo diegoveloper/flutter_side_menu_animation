@@ -1,3 +1,7 @@
+## [1.0.0-beta]
+
+* Null safety migration. Thanks Brayan Cantos
+
 ## [0.0.2]
 
 * `enableEdgeDragGesture` and `edgeDragWidth` was added. Thanks Brayan Cantos.
