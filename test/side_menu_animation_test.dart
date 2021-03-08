@@ -4,15 +4,20 @@ import 'package:side_menu_animation/side_menu_animation.dart';
 
 void main() {
   group('SideMenuAnimation::Tests', () {
-    testWidgets('SideMenuAnimation:: Press menu - Show Scrim Widget', (tester) async {
+    testWidgets('SideMenuAnimation:: Press menu - Show Scrim Widget',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: SideMenuAnimation(
             appBarBuilder: (showMenu) => AppBar(
-              leading: IconButton(icon: Icon(Icons.menu, color: Colors.black), onPressed: showMenu),
+              leading: IconButton(
+                  icon: Icon(Icons.menu, color: Colors.black),
+                  onPressed: showMenu),
             ),
             views: List.generate(4, (index) => Container()),
-            items: List.generate(4, (index) => const SizedBox()).map((value) => value).toList(),
+            items: List.generate(4, (index) => const SizedBox())
+                .map((value) => value)
+                .toList(),
             tapOutsideToDismiss: true,
             onItemSelected: (value) {},
           ),
@@ -25,15 +30,21 @@ void main() {
       expect(find.byType(AnimatedContainer), findsOneWidget);
     });
 
-    testWidgets('SideMenuAnimation:: Press menu, press scrim widget and hide menu', (tester) async {
+    testWidgets(
+        'SideMenuAnimation:: Press menu, press scrim widget and hide menu',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: SideMenuAnimation(
             appBarBuilder: (showMenu) => AppBar(
-              leading: IconButton(icon: Icon(Icons.menu, color: Colors.black), onPressed: showMenu),
+              leading: IconButton(
+                  icon: Icon(Icons.menu, color: Colors.black),
+                  onPressed: showMenu),
             ),
             views: List.generate(4, (index) => Container()),
-            items: List.generate(4, (index) => const SizedBox()).map((value) => value).toList(),
+            items: List.generate(4, (index) => const SizedBox())
+                .map((value) => value)
+                .toList(),
             tapOutsideToDismiss: true,
             onItemSelected: (value) {},
           ),
@@ -48,16 +59,23 @@ void main() {
       expect(find.byType(AnimatedContainer), findsNothing);
     });
 
-    testWidgets('SideMenuAnimation:: Press menu, press item 2 and display page 2', (tester) async {
-      int _indexSelected;
+    testWidgets(
+        'SideMenuAnimation:: Press menu, press item 2 and display page 2',
+        (tester) async {
+      int? _indexSelected;
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: SideMenuAnimation(
             appBarBuilder: (showMenu) => AppBar(
-              leading: IconButton(icon: Icon(Icons.menu, color: Colors.black), onPressed: showMenu),
+              leading: IconButton(
+                  icon: Icon(Icons.menu, color: Colors.black),
+                  onPressed: showMenu),
             ),
             views: List.generate(
-                4, (index) => Container(color: Colors.red, child: Center(child: Text('Page ${index + 1}')))),
+                4,
+                (index) => Container(
+                    color: Colors.red,
+                    child: Center(child: Text('Page ${index + 1}')))),
             items: List.generate(
               4,
               (index) => Center(
