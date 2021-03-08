@@ -3,8 +3,6 @@
 
 .packages
 .pub/
-.fvm/
-.vscode/
 .idea/
 build/
 ios/.generated/
