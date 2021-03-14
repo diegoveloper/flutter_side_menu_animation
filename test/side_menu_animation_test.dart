@@ -11,7 +11,7 @@ void main() {
           body: SideMenuAnimation(
             appBarBuilder: (showMenu) => AppBar(
               leading: IconButton(
-                  icon: Icon(Icons.menu, color: Colors.black),
+                  icon: const Icon(Icons.menu, color: Colors.black),
                   onPressed: showMenu),
             ),
             views: List.generate(4, (index) => Container()),
@@ -38,7 +38,7 @@ void main() {
           body: SideMenuAnimation(
             appBarBuilder: (showMenu) => AppBar(
               leading: IconButton(
-                  icon: Icon(Icons.menu, color: Colors.black),
+                  icon: const Icon(Icons.menu, color: Colors.black),
                   onPressed: showMenu),
             ),
             views: List.generate(4, (index) => Container()),
@@ -68,7 +68,7 @@ void main() {
           body: SideMenuAnimation(
             appBarBuilder: (showMenu) => AppBar(
               leading: IconButton(
-                  icon: Icon(Icons.menu, color: Colors.black),
+                  icon: const Icon(Icons.menu, color: Colors.black),
                   onPressed: showMenu),
             ),
             views: List.generate(
