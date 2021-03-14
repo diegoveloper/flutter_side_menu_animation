@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
 
-/// Signature for a function that creates a widget with a `showMenu` callback which allow us to invoke and open the Side Menu.
+/// Signature for a function that creates a widget with a `showMenu` callback
+/// which allow us to invoke and open the Side Menu.
 /// Used by [SideMenuAnimation.builder].
 typedef SideMenuAnimationBuilder = Widget Function(VoidCallback showMenu);
 
-/// Signature for a function that creates an [AppBar] widget with a `showMenu` callback which allow us to invoke and open the Side Menu.
+/// Signature for a function that creates an [AppBar] widget with a
+/// `showMenu` callback which allow us to invoke and open the Side Menu.
 /// Used by [SideMenuAnimation].
 typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 
 const _sideMenuWidth = 100.0;
-const _sideMenuDuration = const Duration(milliseconds: 800);
+const _sideMenuDuration = Duration(milliseconds: 800);
 const _kEdgeDragWidth = 20.0;
 
-/// this enum is the position selector of the menu.
-enum SideMenuPosition { right, left }
+/// # SideMenuPosition
+/// This enum is the position selector of the menu.
+///
+/// {@template SideMenuPosition.right}
+/// ## right
+/// Set the position of the menu in the right side on the screen
+/// {@endtemplate}
+///
+/// {@template SideMenuPosition.left}
+/// ## left
+/// Set the position of the menu in the left side on the screen
+/// {@endtemplate}
+enum SideMenuPosition {
+  /// {@macro SideMenuPosition.right}
+  right,
 
-/// This is the main widget which controls the items from the lateral menu and also can control the pages with a circular reveal animation.
+  /// {@macro SideMenuPosition.left}
+  left,
+}
+
+/// This is the main widget which controls the items from the lateral menu
+/// and also can control the pages with a circular reveal animation.
 class SideMenuAnimation extends StatefulWidget {
-  /// Constructor to allow us to create a [SideMenuAnimation] without Circular Reveal animation.
-  /// We are responsible for updating/changing the page based on the index we receive.
+  /// Constructor to allow us to create a [SideMenuAnimation] without Circular
+  /// Reveal animation. We are responsible for updating/changing the page
+  /// based on the index we receive.
   const SideMenuAnimation.builder({
     Key? key,
     required this.builder,
@@ -34,13 +55,15 @@ class SideMenuAnimation extends StatefulWidget {
     this.edgeDragWidth = _kEdgeDragWidth,
     this.enableEdgeDragGesture = false,
     this.curveAnimation = Curves.linear,
-  })  : this.views = null,
-        this.appBarBuilder = null,
-        this.indexSelected = null,
+  })  : views = null,
+        appBarBuilder = null,
+        indexSelected = null,
         super(key: key);
 
-  /// Constructor to allow us to create a [SideMenuAnimation] with Circular Reveal animation.
-  /// We are responsible for updating/changing the [AppBar] based on the index we receive.
+  /// Constructor to allow us to create a [SideMenuAnimation] with
+  /// Circular Reveal animation.
+  /// We are responsible for updating/changing the [AppBar]
+  /// based on the index we receive.
   const SideMenuAnimation({
     Key? key,
     required List<Widget> this.views,
@@ -58,13 +81,15 @@ class SideMenuAnimation extends StatefulWidget {
     this.edgeDragWidth = _kEdgeDragWidth,
     this.enableEdgeDragGesture = false,
     this.curveAnimation = Curves.linear,
-  })  : this.builder = null,
+  })  : builder = null,
         super(key: key);
 
   /// Builder where we have to return our view/page based on the index we have, it also comes with the `showMenu` callback where we can use to open the Side Menu.
   final SideMenuAnimationBuilder? builder;
 
-  /// Builder where we have to return our [AppBar] based on the index we have, it also comes with the `showMenu` callback where we can use to open the Side Menu.
+  /// Builder where we have to return our [AppBar] based on the
+  /// index we have, it also comes with the `showMenu` callback
+  /// where we can use to open the Side Menu.
   final SideMenuAnimationAppBarBuilder? appBarBuilder;
 
   /// List of items that we want to display on the Side Menu.
@@ -91,19 +116,24 @@ class SideMenuAnimation extends StatefulWidget {
   /// Initial index selected
   final int? indexSelected;
 
-  /// If we want to tap outside the menu to dismiss the Side Menu, set this to `true`. It's `false` by default.
+  /// If we want to tap outside the menu to dismiss the Side Menu,
+  /// set this to `true`. It's `false` by default.
   final bool tapOutsideToDismiss;
 
-  /// if we want the menu to appear on the right or left side. by default it is on the left side.
+  /// if we want the menu to appear on the right or left side.
+  /// by default it is on the left side.
   final SideMenuPosition position;
 
-  /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`, this is the panel where we tap to dismiss the Side Menu.
+  /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`,
+  /// this is the panel where we tap to dismiss the Side Menu.
   final Color scrimColor;
 
-  /// Enable swipe from left to right to display the menu, it's `false` by default. `enableEdgeDragGesture`
+  /// Enable swipe from left to right to display the menu,
+  /// it's `false` by default. `enableEdgeDragGesture`
   final bool enableEdgeDragGesture;
 
-  /// If `enableEdgeDragGesture` is true, then we can change the `edgeDragWidth`, this is the width of the area where we do swipe.
+  /// If `enableEdgeDragGesture` is true, then we can change
+  /// the `edgeDragWidth`, this is the width of the area where we do swipe.
   final double edgeDragWidth;
 
   /// Curve used for the animation
@@ -173,7 +203,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
   }
 
   void _displayMenuDragGesture(DragEndDetails endDetails) {
-    double? velocity = endDetails.primaryVelocity;
+    final velocity = endDetails.primaryVelocity;
     if (widget.position == SideMenuPosition.left) {
       if (velocity! > 0) _animationReverse();
     } else {
@@ -203,7 +233,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                       appBar: widget.appBarBuilder!(_animationReverse),
                       body: Stack(
                         children: [
-                          if (widget.views!.length > 0) ...[
+                          if (widget.views!.isNotEmpty) ...[
                             widget.views![_oldSelectedIndex!],
                             ClipPath(
                               clipper: _MainSideMenuClipper(
@@ -309,21 +339,21 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
 }
 
 class _MainSideMenuClipper extends CustomClipper<Path> {
+  _MainSideMenuClipper({this.percent, this.dy, this.dx});
+
   final double? percent;
   final double? dy, dx;
 
-  _MainSideMenuClipper({this.percent, this.dy, this.dx});
-
   @override
   Path getClip(Size size) {
-    final path = Path();
-    path.addOval(
-      Rect.fromCenter(
-        center: Offset(dx!, dy!),
-        width: size.width * percent!,
-        height: size.height * percent!,
-      ),
-    );
+    final path = Path()
+      ..addOval(
+        Rect.fromCenter(
+          center: Offset(dx!, dy!),
+          width: size.width * percent!,
+          height: size.height * percent!,
+        ),
+      );
     return path;
   }
 
