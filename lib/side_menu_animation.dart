@@ -346,7 +346,7 @@ class _MainSideMenuClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    final path = Path()
+    return Path()
       ..addOval(
         Rect.fromCenter(
           center: Offset(dx!, dy!),
@@ -354,7 +354,6 @@ class _MainSideMenuClipper extends CustomClipper<Path> {
           height: size.height * percent!,
         ),
       );
-    return path;
   }
 
   @override
