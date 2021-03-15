@@ -34,11 +34,11 @@ enum SideMenuPosition {
   left,
 }
 
-/// This is the main widget which controls the items from the lateral menu
-/// and also can control the pages with a circular reveal animation.
+/// The [SideMenuAnimation] controls the items from the lateral menu
+/// and also can control the circular reveal transition.
 class SideMenuAnimation extends StatefulWidget {
-  /// Constructor to allow us to create a [SideMenuAnimation] without Circular
-  /// Reveal animation. We are responsible for updating/changing the page
+  /// Creates a [SideMenuAnimation] without Circular Reveal animation.
+  /// Also it is responsible for updating/changing the [AppBar]
   /// based on the index we receive.
   const SideMenuAnimation.builder({
     Key? key,
@@ -60,13 +60,12 @@ class SideMenuAnimation extends StatefulWidget {
         indexSelected = null,
         super(key: key);
 
-  /// Constructor to allow us to create a [SideMenuAnimation] with
-  /// Circular Reveal animation.
-  /// We are responsible for updating/changing the [AppBar]
+  /// Creates a [SideMenuAnimation] with Circular Reveal animation.
+  /// Alse it is responsible for updating/changing the [AppBar]
   /// based on the index we receive.
   const SideMenuAnimation({
     Key? key,
-    required List<Widget> this.views,
+    required this.views,
     required this.items,
     required this.onItemSelected,
     this.position = SideMenuPosition.left,
@@ -84,7 +83,9 @@ class SideMenuAnimation extends StatefulWidget {
   })  : builder = null,
         super(key: key);
 
-  /// Builder where we have to return our view/page based on the index we have, it also comes with the `showMenu` callback where we can use to open the Side Menu.
+  /// `builder` where we have to return our view/page based on the index we
+  /// have. It also comes with a `showMenu` callback for
+  /// opening the Side Menu.
   final SideMenuAnimationBuilder? builder;
 
   /// Builder where we have to return our [AppBar] based on the
@@ -169,21 +170,25 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
   void _createAnimations() {
     final _intervalGap = 1 / widget.items.length;
     _animations = List.generate(
-        widget.items.length,
-        (index) => Tween(begin: 0.0, end: 1.6).animate(
-              CurvedAnimation(
-                  parent: _animationController!,
-                  curve: Interval(
-                    index * _intervalGap,
-                    index * _intervalGap + _intervalGap,
-                    curve: widget.curveAnimation,
-                  )),
-            )).toList();
+      widget.items.length,
+      (index) => Tween(begin: 0.0, end: 1.6).animate(
+        CurvedAnimation(
+          parent: _animationController!,
+          curve: Interval(
+            index * _intervalGap,
+            index * _intervalGap + _intervalGap,
+            curve: widget.curveAnimation,
+          ),
+        ),
+      ),
+    );
   }
 
   void _createColorTween() {
-    _scrimColorTween =
-        ColorTween(end: Colors.transparent, begin: widget.scrimColor);
+    _scrimColorTween = ColorTween(
+      end: Colors.transparent,
+      begin: widget.scrimColor,
+    );
   }
 
   @override
@@ -223,114 +228,111 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
           final itemSize = constraints.maxHeight / widget.items.length;
           return AnimatedBuilder(
             animation: _animationController!,
-            builder: (context, child) {
-              return Stack(
-                children: [
-                  if (widget.builder != null)
-                    widget.builder!(_animationReverse),
-                  if (widget.appBarBuilder != null)
-                    Scaffold(
-                      appBar: widget.appBarBuilder!(_animationReverse),
-                      body: Stack(
-                        children: [
-                          if (widget.views!.isNotEmpty) ...[
-                            widget.views![_oldSelectedIndex!],
-                            ClipPath(
-                              clipper: _MainSideMenuClipper(
-                                  percent: _animationController!.status ==
-                                              AnimationStatus.forward &&
-                                          _selectedIndex != _oldSelectedIndex &&
-                                          !_dontAnimate
-                                      ? Tween(begin: 0.0, end: 3.0)
-                                          .animate(_animationController!)
-                                          .value
-                                      : 3.0,
-                                  dy: (itemSize * _selectedIndex!) +
-                                      (itemSize / 2),
-                                  dx: (widget.position == SideMenuPosition.left)
-                                      ? 0.0
-                                      : constraints.maxWidth),
-                              child: widget.views![_selectedIndex!],
-                            )
-                          ],
+            builder: (context, child) => Stack(
+              children: [
+                if (widget.builder != null) widget.builder!(_animationReverse),
+                if (widget.appBarBuilder != null)
+                  Scaffold(
+                    appBar: widget.appBarBuilder!(_animationReverse),
+                    body: Stack(
+                      children: [
+                        if (widget.views!.isNotEmpty) ...[
+                          widget.views![_oldSelectedIndex!],
+                          ClipPath(
+                            clipper: _MainSideMenuClipper(
+                                percent: _animationController!.status ==
+                                            AnimationStatus.forward &&
+                                        _selectedIndex != _oldSelectedIndex &&
+                                        !_dontAnimate
+                                    ? Tween(begin: 0.0, end: 3.0)
+                                        .animate(_animationController!)
+                                        .value
+                                    : 3.0,
+                                dy: (itemSize * _selectedIndex!) +
+                                    (itemSize / 2),
+                                dx: (widget.position == SideMenuPosition.left)
+                                    ? 0.0
+                                    : constraints.maxWidth),
+                            child: widget.views![_selectedIndex!],
+                          )
                         ],
-                      ),
+                      ],
                     ),
-                  if (widget.tapOutsideToDismiss &&
-                      _animationController!.value < 1)
-                    Align(
-                      child: GestureDetector(
-                        onTap: () {
-                          _dontAnimate = true;
-                          _animationController!.forward(from: 0.0);
-                        },
-                        child: AnimatedContainer(
-                          duration: widget.duration,
-                          color: _scrimColorTween.evaluate(
-                              Tween(begin: 0.0, end: 1.0)
-                                  .animate(_animationController!)),
+                  ),
+                if (widget.tapOutsideToDismiss &&
+                    _animationController!.value < 1)
+                  Align(
+                    child: GestureDetector(
+                      onTap: () {
+                        _dontAnimate = true;
+                        _animationController!.forward(from: 0.0);
+                      },
+                      child: AnimatedContainer(
+                        duration: widget.duration,
+                        color: _scrimColorTween.evaluate(
+                          Tween(begin: 0.0, end: 1.0)
+                              .animate(_animationController!),
                         ),
                       ),
                     ),
-                  if (widget.enableEdgeDragGesture &&
-                      _animationController!.isCompleted)
-                    Align(
-                      alignment: (widget.position == SideMenuPosition.left)
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      child: GestureDetector(
-                        onHorizontalDragEnd: _displayMenuDragGesture,
-                        behavior: HitTestBehavior.translucent,
-                        excludeFromSemantics: true,
-                        child: Container(width: widget.edgeDragWidth),
-                      ),
+                  ),
+                if (widget.enableEdgeDragGesture &&
+                    _animationController!.isCompleted)
+                  Align(
+                    alignment: (widget.position == SideMenuPosition.left)
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
+                    child: GestureDetector(
+                      onHorizontalDragEnd: _displayMenuDragGesture,
+                      behavior: HitTestBehavior.translucent,
+                      excludeFromSemantics: true,
+                      child: Container(width: widget.edgeDragWidth),
                     ),
-                  for (int i = 0; i < widget.items.length; i++)
-                    Positioned(
-                      left:
-                          (widget.position != SideMenuPosition.left) ? null : 0,
-                      right:
-                          (widget.position != SideMenuPosition.left) ? 0 : null,
-                      top: itemSize * i,
-                      width: widget.menuWidth,
-                      height: itemSize,
-                      child: Transform(
-                        transform: Matrix4.identity()
-                          ..setEntry(3, 2, 0.001)
-                          ..rotateY(_animationController!.status ==
-                                  AnimationStatus.reverse
-                              ? -_animations[widget.items.length - 1 - i].value
-                              : -_animations[i].value),
-                        alignment: (widget.position != SideMenuPosition.left)
-                            ? Alignment.topRight
-                            : Alignment.topLeft,
-                        child: Material(
-                          color: (i == _selectedColor)
-                              ? widget.selectedColor
-                              : widget.unselectedColor,
-                          child: InkWell(
-                            onTap: () {
-                              _animationController!.forward(from: 0.0);
-                              if (i != 0) {
-                                setState(() {
-                                  _oldSelectedIndex = _selectedIndex;
-                                  _selectedIndex = i - 1;
-                                  _selectedColor = i;
-                                });
-                                _dontAnimate = false;
-                              } else {
-                                _dontAnimate = true;
-                              }
-                              widget.onItemSelected(i);
-                            },
-                            child: widget.items[i],
-                          ),
+                  ),
+                for (int i = 0; i < widget.items.length; i++)
+                  Positioned(
+                    left: (widget.position != SideMenuPosition.left) ? null : 0,
+                    right:
+                        (widget.position != SideMenuPosition.left) ? 0 : null,
+                    top: itemSize * i,
+                    width: widget.menuWidth,
+                    height: itemSize,
+                    child: Transform(
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.001)
+                        ..rotateY(_animationController!.status ==
+                                AnimationStatus.reverse
+                            ? -_animations[widget.items.length - 1 - i].value
+                            : -_animations[i].value),
+                      alignment: (widget.position != SideMenuPosition.left)
+                          ? Alignment.topRight
+                          : Alignment.topLeft,
+                      child: Material(
+                        color: (i == _selectedColor)
+                            ? widget.selectedColor
+                            : widget.unselectedColor,
+                        child: InkWell(
+                          onTap: () {
+                            _animationController!.forward(from: 0.0);
+                            if (i != 0) {
+                              setState(() {
+                                _oldSelectedIndex = _selectedIndex;
+                                _selectedIndex = i - 1;
+                                _selectedColor = i;
+                              });
+                              _dontAnimate = false;
+                            } else {
+                              _dontAnimate = true;
+                            }
+                            widget.onItemSelected(i);
+                          },
+                          child: widget.items[i],
                         ),
                       ),
-                    )
-                ],
-              );
-            },
+                    ),
+                  )
+              ],
+            ),
           );
         },
       ),
@@ -339,19 +341,23 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
 }
 
 class _MainSideMenuClipper extends CustomClipper<Path> {
-  _MainSideMenuClipper({this.percent, this.dy, this.dx});
+  _MainSideMenuClipper({
+    required this.percent,
+    required this.dx,
+    required this.dy,
+  });
 
-  final double? percent;
-  final double? dy, dx;
+  final double percent;
+  final double dx, dy;
 
   @override
   Path getClip(Size size) {
     return Path()
       ..addOval(
         Rect.fromCenter(
-          center: Offset(dx!, dy!),
-          width: size.width * percent!,
-          height: size.height * percent!,
+          center: Offset(dx, dy),
+          width: size.width * percent,
+          height: size.height * percent,
         ),
       );
   }
