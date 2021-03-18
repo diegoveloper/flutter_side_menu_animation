@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-/// Signature for a function that creates a widget with a `showMenu` callback
-/// which allow us to invoke and open the Side Menu.
-/// Used by [SideMenuAnimation.builder].
+/// Signature for creating a widget with a `showMenu` callback
+/// for opening the Side Menu.
+///
+/// See also:
+/// * [SideMenuAnimation.builder]
+/// * [SideMenuAnimationAppBarBuilder]
 typedef SideMenuAnimationBuilder = Widget Function(VoidCallback showMenu);
 
-/// Signature for a function that creates an [AppBar] widget with a
-/// `showMenu` callback which allow us to invoke and open the Side Menu.
-/// Used by [SideMenuAnimation].
+/// Signature for creating an [AppBar] widget with a
+/// `showMenu` callback for opening the Side Menu.
+///
+/// See also:
+/// * [SideMenuAnimation].
 typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 
 const _sideMenuWidth = 100.0;
@@ -34,11 +39,16 @@ enum SideMenuPosition {
   left,
 }
 
-/// This is the main widget which controls the items from the lateral menu
-/// and also can control the pages with a circular reveal animation.
+extension _SideMenuPositionX on SideMenuPosition {
+  bool get isLeft => this == SideMenuPosition.left;
+  bool get isRight => this == SideMenuPosition.right;
+}
+
+/// The [SideMenuAnimation] controls the items from the lateral menu
+/// and also can control the circular reveal transition.
 class SideMenuAnimation extends StatefulWidget {
-  /// Constructor to allow us to create a [SideMenuAnimation] without Circular
-  /// Reveal animation. We are responsible for updating/changing the page
+  /// Creates a [SideMenuAnimation] without Circular Reveal animation.
+  /// Also it is responsible for updating/changing the [AppBar]
   /// based on the index we receive.
   const SideMenuAnimation.builder({
     Key? key,
@@ -48,47 +58,53 @@ class SideMenuAnimation extends StatefulWidget {
     this.position = SideMenuPosition.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
-    this.menuWidth = _sideMenuWidth,
-    this.duration = _sideMenuDuration,
+    double? menuWidth,
+    Duration? duration,
     this.tapOutsideToDismiss = false,
     this.scrimColor = Colors.transparent,
-    this.edgeDragWidth = _kEdgeDragWidth,
+    double? edgeDragWidth,
     this.enableEdgeDragGesture = false,
     this.curveAnimation = Curves.linear,
   })  : views = null,
         appBarBuilder = null,
         indexSelected = null,
+        menuWidth = menuWidth ?? _sideMenuWidth,
+        duration = duration ?? _sideMenuDuration,
+        edgeDragWidth = edgeDragWidth ?? _kEdgeDragWidth,
         super(key: key);
 
-  /// Constructor to allow us to create a [SideMenuAnimation] with
-  /// Circular Reveal animation.
-  /// We are responsible for updating/changing the [AppBar]
+  /// Creates a [SideMenuAnimation] with Circular Reveal animation.
+  /// Also it is responsible for updating/changing the [AppBar]
   /// based on the index we receive.
   const SideMenuAnimation({
     Key? key,
-    required List<Widget> this.views,
+    required this.views,
     required this.items,
     required this.onItemSelected,
     this.position = SideMenuPosition.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
-    this.menuWidth = _sideMenuWidth,
-    this.duration = _sideMenuDuration,
+    double? menuWidth,
+    Duration? duration,
     this.appBarBuilder,
     this.indexSelected = 0,
     this.tapOutsideToDismiss = false,
     this.scrimColor = Colors.transparent,
-    this.edgeDragWidth = _kEdgeDragWidth,
+    double? edgeDragWidth,
     this.enableEdgeDragGesture = false,
     this.curveAnimation = Curves.linear,
   })  : builder = null,
+        menuWidth = menuWidth ?? _sideMenuWidth,
+        duration = duration ?? _sideMenuDuration,
+        edgeDragWidth = edgeDragWidth ?? _kEdgeDragWidth,
         super(key: key);
 
-  /// Builder where we have to return our view/page based on the index we have, it also comes with the `showMenu` callback where we can use to open the Side Menu.
+  /// `builder` builds a view/page based on the `selectedIndex.
+  /// It also comes with a `showMenu` callback for opening the Side Menu.
   final SideMenuAnimationBuilder? builder;
 
-  /// Builder where we have to return our [AppBar] based on the
-  /// index we have, it also comes with the `showMenu` callback
+  /// `appBarBuilder` returns an [AppBar] based on the `selectedIndex`
+  /// It also comes with the `showMenu` callback
   /// where we can use to open the Side Menu.
   final SideMenuAnimationAppBarBuilder? appBarBuilder;
 
@@ -107,36 +123,39 @@ class SideMenuAnimation extends StatefulWidget {
   /// Menu width for the Side Menu.
   final double menuWidth;
 
-  /// Duration for the animation when the menu appears, this is the total duration, each item has total_duration/items.lenght
+  /// Duration for the animation when the menu appears, this is
+  /// the total duration, each item has total_duration/items.lenght
   final Duration duration;
 
-  /// Pages/Views we pass to the widge to display with a circular reveal animation
+  /// Pages/Views we pass to the widge to display with a circular
+  /// reveal animation
   final List<Widget>? views;
 
   /// Initial index selected
   final int? indexSelected;
 
-  /// If we want to tap outside the menu to dismiss the Side Menu,
-  /// set this to `true`. It's `false` by default.
+  /// Enables to dismiss the [SideMenuAnimation] when user taps outside
+  /// the widget.
+  /// It's `false` by default.
   final bool tapOutsideToDismiss;
 
-  /// if we want the menu to appear on the right or left side.
-  /// by default it is on the left side.
+  /// Defines the `position` of the sider menu: `left` of `right`.
+  /// By default it is [SideMenuPosition.left].
   final SideMenuPosition position;
 
-  /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`,
-  /// this is the panel where we tap to dismiss the Side Menu.
+  /// If `tapOutsideToDismiss` is true, then the `scrimColor` is enabled
+  /// to change, this is the panel where we tap to dismiss the Side Menu.
   final Color scrimColor;
 
-  /// Enable swipe from left to right to display the menu,
-  /// it's `false` by default. `enableEdgeDragGesture`
+  /// Enables swipe from left to right to display the menu,
+  /// it's `false` by default.
   final bool enableEdgeDragGesture;
 
   /// If `enableEdgeDragGesture` is true, then we can change
   /// the `edgeDragWidth`, this is the width of the area where we do swipe.
   final double edgeDragWidth;
 
-  /// Curve used for the animation
+  /// [Curve] used for the animation
   final Curve curveAnimation;
 
   @override
@@ -145,23 +164,23 @@ class SideMenuAnimation extends StatefulWidget {
 
 class _SideMenuAnimationState extends State<SideMenuAnimation>
     with SingleTickerProviderStateMixin {
-  AnimationController? _animationController;
+  late AnimationController _animationController;
   late List<Animation<double>> _animations;
 
-  int? _selectedIndex;
+  late int _selectedIndex;
+  late int _oldSelectedIndex;
   int _selectedColor = 1;
-  int? _oldSelectedIndex;
   bool _dontAnimate = false;
   late ColorTween _scrimColorTween;
 
   @override
   void initState() {
-    _selectedIndex = widget.indexSelected;
+    _selectedIndex = widget.indexSelected ?? 0;
     _oldSelectedIndex = _selectedIndex;
     _animationController =
         AnimationController(vsync: this, duration: widget.duration);
     _createAnimations();
-    _animationController!.forward(from: 1.0);
+    _animationController.forward(from: 1.0);
     _createColorTween();
     super.initState();
   }
@@ -169,21 +188,25 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
   void _createAnimations() {
     final _intervalGap = 1 / widget.items.length;
     _animations = List.generate(
-        widget.items.length,
-        (index) => Tween(begin: 0.0, end: 1.6).animate(
-              CurvedAnimation(
-                  parent: _animationController!,
-                  curve: Interval(
-                    index * _intervalGap,
-                    index * _intervalGap + _intervalGap,
-                    curve: widget.curveAnimation,
-                  )),
-            )).toList();
+      widget.items.length,
+      (index) => Tween(begin: 0.0, end: 1.6).animate(
+        CurvedAnimation(
+          parent: _animationController,
+          curve: Interval(
+            _intervalGap * index,
+            _intervalGap * (index + 1),
+            curve: widget.curveAnimation,
+          ),
+        ),
+      ),
+    );
   }
 
   void _createColorTween() {
-    _scrimColorTween =
-        ColorTween(end: Colors.transparent, begin: widget.scrimColor);
+    _scrimColorTween = ColorTween(
+      end: Colors.transparent,
+      begin: widget.scrimColor,
+    );
   }
 
   @override
@@ -192,27 +215,27 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
     if (oldWidget.scrimColor != widget.scrimColor) _createColorTween();
     if (oldWidget.items.length != widget.items.length) _createAnimations();
     if (oldWidget.duration != widget.duration) {
-      _animationController!.duration = widget.duration;
+      _animationController.duration = widget.duration;
     }
   }
 
   @override
   void dispose() {
-    _animationController?.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   void _displayMenuDragGesture(DragEndDetails endDetails) {
-    final velocity = endDetails.primaryVelocity;
-    if (widget.position == SideMenuPosition.left) {
-      if (velocity! > 0) _animationReverse();
+    final velocity = endDetails.primaryVelocity!;
+    if (widget.position.isLeft) {
+      if (velocity > 0) _animationReverse();
     } else {
-      if (velocity! < 0) _animationReverse();
+      if (velocity < 0) _animationReverse();
     }
   }
 
   void _animationReverse() {
-    _animationController!.reverse();
+    _animationController.reverse();
   }
 
   @override
@@ -222,115 +245,111 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
         builder: (context, constraints) {
           final itemSize = constraints.maxHeight / widget.items.length;
           return AnimatedBuilder(
-            animation: _animationController!,
-            builder: (context, child) {
-              return Stack(
-                children: [
-                  if (widget.builder != null)
-                    widget.builder!(_animationReverse),
-                  if (widget.appBarBuilder != null)
-                    Scaffold(
-                      appBar: widget.appBarBuilder!(_animationReverse),
-                      body: Stack(
-                        children: [
-                          if (widget.views!.isNotEmpty) ...[
-                            widget.views![_oldSelectedIndex!],
-                            ClipPath(
-                              clipper: _MainSideMenuClipper(
-                                  percent: _animationController!.status ==
-                                              AnimationStatus.forward &&
-                                          _selectedIndex != _oldSelectedIndex &&
-                                          !_dontAnimate
-                                      ? Tween(begin: 0.0, end: 3.0)
-                                          .animate(_animationController!)
-                                          .value
-                                      : 3.0,
-                                  dy: (itemSize * _selectedIndex!) +
-                                      (itemSize / 2),
-                                  dx: (widget.position == SideMenuPosition.left)
-                                      ? 0.0
-                                      : constraints.maxWidth),
-                              child: widget.views![_selectedIndex!],
-                            )
-                          ],
+            animation: _animationController,
+            builder: (context, child) => Stack(
+              children: [
+                if (widget.builder != null) widget.builder!(_animationReverse),
+                if (widget.appBarBuilder != null)
+                  Scaffold(
+                    appBar: widget.appBarBuilder!(_animationReverse),
+                    body: Stack(
+                      children: [
+                        if (widget.views!.isNotEmpty) ...[
+                          widget.views![_oldSelectedIndex],
+                          ClipPath(
+                            clipper: _MainSideMenuClipper(
+                              percent: _animationController.status ==
+                                          AnimationStatus.forward &&
+                                      _selectedIndex != _oldSelectedIndex &&
+                                      !_dontAnimate
+                                  ? Tween(begin: 0.0, end: 3.0)
+                                      .animate(_animationController)
+                                      .value
+                                  : 3.0,
+                              dy: (itemSize * _selectedIndex) + (itemSize / 2),
+                              dx: widget.position.isLeft
+                                  ? 0.0
+                                  : constraints.maxWidth,
+                            ),
+                            child: widget.views![_selectedIndex],
+                          )
                         ],
-                      ),
+                      ],
                     ),
-                  if (widget.tapOutsideToDismiss &&
-                      _animationController!.value < 1)
-                    Align(
-                      child: GestureDetector(
-                        onTap: () {
-                          _dontAnimate = true;
-                          _animationController!.forward(from: 0.0);
-                        },
-                        child: AnimatedContainer(
-                          duration: widget.duration,
-                          color: _scrimColorTween.evaluate(
-                              Tween(begin: 0.0, end: 1.0)
-                                  .animate(_animationController!)),
+                  ),
+                if (widget.tapOutsideToDismiss &&
+                    _animationController.value < 1)
+                  Align(
+                    child: GestureDetector(
+                      onTap: () {
+                        _dontAnimate = true;
+                        _animationController.forward(from: 0.0);
+                      },
+                      child: AnimatedContainer(
+                        duration: widget.duration,
+                        color: _scrimColorTween.evaluate(
+                          Tween(begin: 0.0, end: 1.0)
+                              .animate(_animationController),
                         ),
                       ),
                     ),
-                  if (widget.enableEdgeDragGesture &&
-                      _animationController!.isCompleted)
-                    Align(
-                      alignment: (widget.position == SideMenuPosition.left)
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      child: GestureDetector(
-                        onHorizontalDragEnd: _displayMenuDragGesture,
-                        behavior: HitTestBehavior.translucent,
-                        excludeFromSemantics: true,
-                        child: Container(width: widget.edgeDragWidth),
-                      ),
+                  ),
+                if (widget.enableEdgeDragGesture &&
+                    _animationController.isCompleted)
+                  Align(
+                    alignment: widget.position.isLeft
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
+                    child: GestureDetector(
+                      onHorizontalDragEnd: _displayMenuDragGesture,
+                      behavior: HitTestBehavior.translucent,
+                      excludeFromSemantics: true,
+                      child: Container(width: widget.edgeDragWidth),
                     ),
-                  for (int i = 0; i < widget.items.length; i++)
-                    Positioned(
-                      left:
-                          (widget.position != SideMenuPosition.left) ? null : 0,
-                      right:
-                          (widget.position != SideMenuPosition.left) ? 0 : null,
-                      top: itemSize * i,
-                      width: widget.menuWidth,
-                      height: itemSize,
-                      child: Transform(
-                        transform: Matrix4.identity()
-                          ..setEntry(3, 2, 0.001)
-                          ..rotateY(_animationController!.status ==
-                                  AnimationStatus.reverse
-                              ? -_animations[widget.items.length - 1 - i].value
-                              : -_animations[i].value),
-                        alignment: (widget.position != SideMenuPosition.left)
-                            ? Alignment.topRight
-                            : Alignment.topLeft,
-                        child: Material(
-                          color: (i == _selectedColor)
-                              ? widget.selectedColor
-                              : widget.unselectedColor,
-                          child: InkWell(
-                            onTap: () {
-                              _animationController!.forward(from: 0.0);
-                              if (i != 0) {
-                                setState(() {
-                                  _oldSelectedIndex = _selectedIndex;
-                                  _selectedIndex = i - 1;
-                                  _selectedColor = i;
-                                });
-                                _dontAnimate = false;
-                              } else {
-                                _dontAnimate = true;
-                              }
-                              widget.onItemSelected(i);
-                            },
-                            child: widget.items[i],
-                          ),
+                  ),
+                for (int i = 0; i < widget.items.length; i++)
+                  Positioned(
+                    left: widget.position.isLeft ? 0 : null,
+                    right: widget.position.isRight ? 0 : null,
+                    top: itemSize * i,
+                    width: widget.menuWidth,
+                    height: itemSize,
+                    child: Transform(
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.001)
+                        ..rotateY(_animationController.status ==
+                                AnimationStatus.reverse
+                            ? -_animations[widget.items.length - 1 - i].value
+                            : -_animations[i].value),
+                      alignment: widget.position.isRight
+                          ? Alignment.topRight
+                          : Alignment.topLeft,
+                      child: Material(
+                        color: (i == _selectedColor)
+                            ? widget.selectedColor
+                            : widget.unselectedColor,
+                        child: InkWell(
+                          onTap: () {
+                            _animationController.forward(from: 0.0);
+                            if (i != 0) {
+                              setState(() {
+                                _oldSelectedIndex = _selectedIndex;
+                                _selectedIndex = i - 1;
+                                _selectedColor = i;
+                              });
+                              _dontAnimate = false;
+                            } else {
+                              _dontAnimate = true;
+                            }
+                            widget.onItemSelected(i);
+                          },
+                          child: widget.items[i],
                         ),
                       ),
-                    )
-                ],
-              );
-            },
+                    ),
+                  )
+              ],
+            ),
           );
         },
       ),
@@ -339,23 +358,24 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
 }
 
 class _MainSideMenuClipper extends CustomClipper<Path> {
-  _MainSideMenuClipper({this.percent, this.dy, this.dx});
+  _MainSideMenuClipper({
+    required this.percent,
+    required this.dx,
+    required this.dy,
+  });
 
-  final double? percent;
-  final double? dy, dx;
+  final double percent;
+  final double dx, dy;
 
   @override
-  Path getClip(Size size) {
-    final path = Path()
-      ..addOval(
-        Rect.fromCenter(
-          center: Offset(dx!, dy!),
-          width: size.width * percent!,
-          height: size.height * percent!,
-        ),
-      );
-    return path;
-  }
+  Path getClip(Size size) => Path()
+    ..addOval(
+      Rect.fromCenter(
+        center: Offset(dx, dy),
+        width: size.width * percent,
+        height: size.height * percent,
+      ),
+    );
 
   @override
   bool shouldReclip(covariant _MainSideMenuClipper oldClipper) =>
