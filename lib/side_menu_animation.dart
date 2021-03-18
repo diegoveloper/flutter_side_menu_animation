@@ -74,7 +74,7 @@ class SideMenuAnimation extends StatefulWidget {
         super(key: key);
 
   /// Creates a [SideMenuAnimation] with Circular Reveal animation.
-  /// Alse it is responsible for updating/changing the [AppBar]
+  /// Also it is responsible for updating/changing the [AppBar]
   /// based on the index we receive.
   const SideMenuAnimation({
     Key? key,
@@ -99,13 +99,12 @@ class SideMenuAnimation extends StatefulWidget {
         edgeDragWidth = edgeDragWidth ?? _kEdgeDragWidth,
         super(key: key);
 
-  /// `builder` where we have to return our view/page based on the index we
-  /// have. It also comes with a `showMenu` callback for
-  /// opening the Side Menu.
+  /// `builder` builds a view/page based on the `selectedIndex.
+  /// It also comes with a `showMenu` callback for opening the Side Menu.
   final SideMenuAnimationBuilder? builder;
 
-  /// Builder where we have to return our [AppBar] based on the
-  /// index we have, it also comes with the `showMenu` callback
+  /// `appBarBuilder` returns an [AppBar] based on the `selectedIndex`
+  /// It also comes with the `showMenu` callback
   /// where we can use to open the Side Menu.
   final SideMenuAnimationAppBarBuilder? appBarBuilder;
 
@@ -124,29 +123,32 @@ class SideMenuAnimation extends StatefulWidget {
   /// Menu width for the Side Menu.
   final double menuWidth;
 
-  /// Duration for the animation when the menu appears, this is the total duration, each item has total_duration/items.lenght
+  /// Duration for the animation when the menu appears, this is
+  /// the total duration, each item has total_duration/items.lenght
   final Duration duration;
 
-  /// Pages/Views we pass to the widge to display with a circular reveal animation
+  /// Pages/Views we pass to the widge to display with a circular
+  /// reveal animation
   final List<Widget>? views;
 
   /// Initial index selected
   final int? indexSelected;
 
-  /// If we want to tap outside the menu to dismiss the Side Menu,
-  /// set this to `true`. It's `false` by default.
+  /// Enables to dismiss the [SideMenuAnimation] when user taps outside
+  /// the widget.
+  /// It's `false` by default.
   final bool tapOutsideToDismiss;
 
-  /// if we want the menu to appear on the right or left side.
-  /// by default it is on the left side.
+  /// Defines the `position` of the sider menu: `left` of `right`.
+  /// By default it is [SideMenuPosition.left].
   final SideMenuPosition position;
 
-  /// If `tapOutsideToDismiss` is true, then we can change the `scrimColor`,
-  /// this is the panel where we tap to dismiss the Side Menu.
+  /// If `tapOutsideToDismiss` is true, then the `scrimColor` is enabled
+  /// to change, this is the panel where we tap to dismiss the Side Menu.
   final Color scrimColor;
 
-  /// Enable swipe from left to right to display the menu,
-  /// it's `false` by default. `enableEdgeDragGesture`
+  /// Enables swipe from left to right to display the menu,
+  /// it's `false` by default.
   final bool enableEdgeDragGesture;
 
   /// If `enableEdgeDragGesture` is true, then we can change
