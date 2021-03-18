@@ -84,16 +84,19 @@ class SideMenuAnimation extends StatefulWidget {
     this.position = SideMenuPosition.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
-    this.menuWidth = _sideMenuWidth,
-    this.duration = _sideMenuDuration,
+    double? menuWidth,
+    Duration? duration,
     this.appBarBuilder,
     this.indexSelected = 0,
     this.tapOutsideToDismiss = false,
     this.scrimColor = Colors.transparent,
-    this.edgeDragWidth = _kEdgeDragWidth,
+    double? edgeDragWidth,
     this.enableEdgeDragGesture = false,
     this.curveAnimation = Curves.linear,
   })  : builder = null,
+        menuWidth = menuWidth ?? _sideMenuWidth,
+        duration = duration ?? _sideMenuDuration,
+        edgeDragWidth = edgeDragWidth ?? _kEdgeDragWidth,
         super(key: key);
 
   /// `builder` where we have to return our view/page based on the index we
