@@ -155,7 +155,7 @@ class SideMenuAnimation extends StatefulWidget {
   /// the `edgeDragWidth`, this is the width of the area where we do swipe.
   final double edgeDragWidth;
 
-  /// Curve used for the animation
+  /// [Curve] used for the animation
   final Curve curveAnimation;
 
   @override
