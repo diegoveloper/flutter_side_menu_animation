@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// Signature for a function that creates a widget with a `showMenu` callback
-/// which allow us to invoke and open the Side Menu.
-/// Used by [SideMenuAnimation.builder].
+/// Signature for creating a widget with a `showMenu` callback
+/// for opening the Side Menu.
+///
+/// See also:
+/// * [SideMenuAnimation.builder]
+/// * [SideMenuAnimationAppBarBuilder]
 typedef SideMenuAnimationBuilder = Widget Function(VoidCallback showMenu);
 
 /// Signature for a function that creates an [AppBar] widget with a
