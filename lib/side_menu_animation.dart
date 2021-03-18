@@ -8,9 +8,11 @@ import 'package:flutter/material.dart';
 /// * [SideMenuAnimationAppBarBuilder]
 typedef SideMenuAnimationBuilder = Widget Function(VoidCallback showMenu);
 
-/// Signature for a function that creates an [AppBar] widget with a
-/// `showMenu` callback which allow us to invoke and open the Side Menu.
-/// Used by [SideMenuAnimation].
+/// Signature for creating an [AppBar] widget with a
+/// `showMenu` callback for opening the Side Menu.
+///
+/// See also:
+/// * [SideMenuAnimation].
 typedef SideMenuAnimationAppBarBuilder = AppBar Function(VoidCallback showMenu);
 
 const _sideMenuWidth = 100.0;
