@@ -58,16 +58,19 @@ class SideMenuAnimation extends StatefulWidget {
     this.position = SideMenuPosition.left,
     this.selectedColor = Colors.black,
     this.unselectedColor = Colors.green,
-    this.menuWidth = _sideMenuWidth,
-    this.duration = _sideMenuDuration,
+    double? menuWidth,
+    Duration? duration,
     this.tapOutsideToDismiss = false,
     this.scrimColor = Colors.transparent,
-    this.edgeDragWidth = _kEdgeDragWidth,
+    double? edgeDragWidth,
     this.enableEdgeDragGesture = false,
     this.curveAnimation = Curves.linear,
   })  : views = null,
         appBarBuilder = null,
         indexSelected = null,
+        menuWidth = menuWidth ?? _sideMenuWidth,
+        duration = duration ?? _sideMenuDuration,
+        edgeDragWidth = edgeDragWidth ?? _kEdgeDragWidth,
         super(key: key);
 
   /// Creates a [SideMenuAnimation] with Circular Reveal animation.
