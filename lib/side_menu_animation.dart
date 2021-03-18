@@ -39,6 +39,11 @@ enum SideMenuPosition {
   left,
 }
 
+extension _SideMenuPositionX on SideMenuPosition {
+  bool get isLeft => this == SideMenuPosition.left;
+  bool get isRight => this == SideMenuPosition.right;
+}
+
 /// The [SideMenuAnimation] controls the items from the lateral menu
 /// and also can control the circular reveal transition.
 class SideMenuAnimation extends StatefulWidget {
