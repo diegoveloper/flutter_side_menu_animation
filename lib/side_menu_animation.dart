@@ -162,23 +162,23 @@ class SideMenuAnimation extends StatefulWidget {
 
 class _SideMenuAnimationState extends State<SideMenuAnimation>
     with SingleTickerProviderStateMixin {
-  AnimationController? _animationController;
+  late AnimationController _animationController;
   late List<Animation<double>> _animations;
 
-  int? _selectedIndex;
+  late int _selectedIndex;
+  late int _oldSelectedIndex;
   int _selectedColor = 1;
-  int? _oldSelectedIndex;
   bool _dontAnimate = false;
   late ColorTween _scrimColorTween;
 
   @override
   void initState() {
-    _selectedIndex = widget.indexSelected;
+    _selectedIndex = widget.indexSelected ?? 0;
     _oldSelectedIndex = _selectedIndex;
     _animationController =
         AnimationController(vsync: this, duration: widget.duration);
     _createAnimations();
-    _animationController!.forward(from: 1.0);
+    _animationController.forward(from: 1.0);
     _createColorTween();
     super.initState();
   }
@@ -189,10 +189,10 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
       widget.items.length,
       (index) => Tween(begin: 0.0, end: 1.6).animate(
         CurvedAnimation(
-          parent: _animationController!,
+          parent: _animationController,
           curve: Interval(
-            index * _intervalGap,
-            index * _intervalGap + _intervalGap,
+            _intervalGap * index,
+            _intervalGap * (index + 1),
             curve: widget.curveAnimation,
           ),
         ),
@@ -213,27 +213,27 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
     if (oldWidget.scrimColor != widget.scrimColor) _createColorTween();
     if (oldWidget.items.length != widget.items.length) _createAnimations();
     if (oldWidget.duration != widget.duration) {
-      _animationController!.duration = widget.duration;
+      _animationController.duration = widget.duration;
     }
   }
 
   @override
   void dispose() {
-    _animationController?.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   void _displayMenuDragGesture(DragEndDetails endDetails) {
-    final velocity = endDetails.primaryVelocity;
-    if (widget.position == SideMenuPosition.left) {
-      if (velocity! > 0) _animationReverse();
+    final velocity = endDetails.primaryVelocity!;
+    if (widget.position.isLeft) {
+      if (velocity > 0) _animationReverse();
     } else {
-      if (velocity! < 0) _animationReverse();
+      if (velocity < 0) _animationReverse();
     }
   }
 
   void _animationReverse() {
-    _animationController!.reverse();
+    _animationController.reverse();
   }
 
   @override
@@ -243,7 +243,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
         builder: (context, constraints) {
           final itemSize = constraints.maxHeight / widget.items.length;
           return AnimatedBuilder(
-            animation: _animationController!,
+            animation: _animationController,
             builder: (context, child) => Stack(
               children: [
                 if (widget.builder != null) widget.builder!(_animationReverse),
@@ -253,49 +253,49 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                     body: Stack(
                       children: [
                         if (widget.views!.isNotEmpty) ...[
-                          widget.views![_oldSelectedIndex!],
+                          widget.views![_oldSelectedIndex],
                           ClipPath(
                             clipper: _MainSideMenuClipper(
-                                percent: _animationController!.status ==
-                                            AnimationStatus.forward &&
-                                        _selectedIndex != _oldSelectedIndex &&
-                                        !_dontAnimate
-                                    ? Tween(begin: 0.0, end: 3.0)
-                                        .animate(_animationController!)
-                                        .value
-                                    : 3.0,
-                                dy: (itemSize * _selectedIndex!) +
-                                    (itemSize / 2),
-                                dx: (widget.position == SideMenuPosition.left)
-                                    ? 0.0
-                                    : constraints.maxWidth),
-                            child: widget.views![_selectedIndex!],
+                              percent: _animationController.status ==
+                                          AnimationStatus.forward &&
+                                      _selectedIndex != _oldSelectedIndex &&
+                                      !_dontAnimate
+                                  ? Tween(begin: 0.0, end: 3.0)
+                                      .animate(_animationController)
+                                      .value
+                                  : 3.0,
+                              dy: (itemSize * _selectedIndex) + (itemSize / 2),
+                              dx: widget.position.isLeft
+                                  ? 0.0
+                                  : constraints.maxWidth,
+                            ),
+                            child: widget.views![_selectedIndex],
                           )
                         ],
                       ],
                     ),
                   ),
                 if (widget.tapOutsideToDismiss &&
-                    _animationController!.value < 1)
+                    _animationController.value < 1)
                   Align(
                     child: GestureDetector(
                       onTap: () {
                         _dontAnimate = true;
-                        _animationController!.forward(from: 0.0);
+                        _animationController.forward(from: 0.0);
                       },
                       child: AnimatedContainer(
                         duration: widget.duration,
                         color: _scrimColorTween.evaluate(
                           Tween(begin: 0.0, end: 1.0)
-                              .animate(_animationController!),
+                              .animate(_animationController),
                         ),
                       ),
                     ),
                   ),
                 if (widget.enableEdgeDragGesture &&
-                    _animationController!.isCompleted)
+                    _animationController.isCompleted)
                   Align(
-                    alignment: (widget.position == SideMenuPosition.left)
+                    alignment: widget.position.isLeft
                         ? Alignment.centerLeft
                         : Alignment.centerRight,
                     child: GestureDetector(
@@ -307,20 +307,19 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                   ),
                 for (int i = 0; i < widget.items.length; i++)
                   Positioned(
-                    left: (widget.position != SideMenuPosition.left) ? null : 0,
-                    right:
-                        (widget.position != SideMenuPosition.left) ? 0 : null,
+                    left: widget.position.isLeft ? 0 : null,
+                    right: widget.position.isRight ? 0 : null,
                     top: itemSize * i,
                     width: widget.menuWidth,
                     height: itemSize,
                     child: Transform(
                       transform: Matrix4.identity()
                         ..setEntry(3, 2, 0.001)
-                        ..rotateY(_animationController!.status ==
+                        ..rotateY(_animationController.status ==
                                 AnimationStatus.reverse
                             ? -_animations[widget.items.length - 1 - i].value
                             : -_animations[i].value),
-                      alignment: (widget.position != SideMenuPosition.left)
+                      alignment: widget.position.isRight
                           ? Alignment.topRight
                           : Alignment.topLeft,
                       child: Material(
@@ -329,7 +328,7 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                             : widget.unselectedColor,
                         child: InkWell(
                           onTap: () {
-                            _animationController!.forward(from: 0.0);
+                            _animationController.forward(from: 0.0);
                             if (i != 0) {
                               setState(() {
                                 _oldSelectedIndex = _selectedIndex;
