@@ -367,16 +367,14 @@ class _MainSideMenuClipper extends CustomClipper<Path> {
   final double dx, dy;
 
   @override
-  Path getClip(Size size) {
-    return Path()
-      ..addOval(
-        Rect.fromCenter(
-          center: Offset(dx, dy),
-          width: size.width * percent,
-          height: size.height * percent,
-        ),
-      );
-  }
+  Path getClip(Size size) => Path()
+    ..addOval(
+      Rect.fromCenter(
+        center: Offset(dx, dy),
+        width: size.width * percent,
+        height: size.height * percent,
+      ),
+    );
 
   @override
   bool shouldReclip(covariant _MainSideMenuClipper oldClipper) =>
