@@ -57,7 +57,7 @@ class _CircularApearingState extends State<CircularApearing> {
   void didUpdateWidget(covariant CircularApearing oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.child != widget.child ||
-        oldWidget.enteringChild != oldWidget.enteringChild) {
+        oldWidget.enteringChild != widget.enteringChild) {
       child = widget.child;
       enteringChild = widget.enteringChild;
     }
