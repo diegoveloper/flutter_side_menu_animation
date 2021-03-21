@@ -233,11 +233,11 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                 Scaffold(
                   appBar: widget.appBarBuilder!(_animationReverse),
                   body: CircularApearing(
-                    child: widget.views![_oldSelectedIndex],
-                    enteringChild: widget.views![_selectedIndex],
                     animationController: _animationController,
                     dx: widget.position.isLeft ? 0.0 : constraints.maxWidth,
                     dy: (itemSize * _selectedIndex) + (itemSize / 2),
+                    child: widget.views![_oldSelectedIndex],
+                    enteringChild: widget.views![_selectedIndex],
                   ),
                 ),
               AnimatedBuilder(
