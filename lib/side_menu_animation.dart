@@ -284,15 +284,16 @@ class _SideMenuAnimationState extends State<SideMenuAnimation>
                             ? widget.selectedColor
                             : widget.unselectedColor,
                         onTap: () {
-                          _animationController.forward(from: 0.0);
-                          if (i != 0) {
-                            setState(() {
-                              _oldSelectedIndex = _selectedIndex;
-                              _selectedIndex = i - 1;
-                              _selectedColor = i;
-                            });
+                          if (i != _selectedColor) {
+                            if (i != 0) {
+                              setState(() {
+                                _oldSelectedIndex = _selectedIndex;
+                                _selectedIndex = i - 1;
+                                _selectedColor = i;
+                              });
+                            }
+                            widget.onItemSelected(i);
                           }
-                          widget.onItemSelected(i);
                         },
                         child: widget.items[i],
                       ),
@@ -386,7 +387,10 @@ class MenuItem extends StatelessWidget {
         child: Material(
           color: color,
           child: InkWell(
-            onTap: onTap,
+            onTap: () {
+              controller.forward(from: 0.0);
+              onTap();
+            },
             child: child,
           ),
         ),
