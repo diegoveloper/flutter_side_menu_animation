@@ -1,3 +1,7 @@
+## [1.1.0]
+
+* Official release.
+
 ## [1.0.0-beta]
 
 * Null safety migration. Thanks Brayan Cantos
