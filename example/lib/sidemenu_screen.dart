@@ -1,6 +1,7 @@
 import 'package:example/menu_value.dart';
 import 'package:example/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:side_menu_animation/side_menu_animation.dart';
 
 class SideMenuScreen extends StatelessWidget {
@@ -15,7 +16,7 @@ class SideMenuScreen extends StatelessWidget {
               icon: Icon(Icons.menu, color: Colors.black), onPressed: showMenu),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
-          brightness: Brightness.light,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
           centerTitle: true,
           title: ValueListenableBuilder<int>(
             valueListenable: _index,
