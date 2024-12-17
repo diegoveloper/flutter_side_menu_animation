@@ -97,5 +97,44 @@ void main() {
       expect(find.text('Page 3'), findsOneWidget);
       expect(_indexSelected, 3);
     });
+
+    testWidgets(
+        'SideMenuAnimation:: Press menu, when in page 1, press item 1 and stay in same page',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SideMenuAnimation(
+            appBarBuilder: (showMenu) => AppBar(
+              leading: IconButton(
+                  icon: const Icon(Icons.menu, color: Colors.black),
+                  onPressed: showMenu),
+            ),
+            views: List.generate(
+                4,
+                (index) => Container(
+                    color: Colors.red,
+                    child: Center(child: Text('Page ${index + 1}')))),
+            items: List.generate(
+              4,
+              (index) => Center(
+                child: Text('Item $index'),
+              ),
+            ).map((value) => value).toList(),
+            tapOutsideToDismiss: true,
+            scrimColor: Colors.black45,
+            onItemSelected: (value) {},
+          ),
+        ),
+      ));
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Item 1'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Item 1'));
+      await tester.pumpAndSettle();
+      expect(find.text('Page 1'), findsOneWidget);
+    });
   });
 }
